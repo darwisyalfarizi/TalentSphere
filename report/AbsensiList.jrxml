@@ -1,0 +1,83 @@
+<!-- Created with Jaspersoft Studio version 7.0.1.final using JasperReports Library version 7.0.1-573496633c2b4074e32f433154b543003f7d2498  -->
+<jasperReport name="AbsensiList" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="32a028b1-67a8-473e-827b-8a6dbc99d790">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="MYSQL"/>
+	<query language="SQL"><![CDATA[SELECT  * FROM absensi]]></query>
+	<field name="id_absensi" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="id_absensi"/>
+		<property name="com.jaspersoft.studio.field.label" value="id_absensi"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="absensi"/>
+	</field>
+	<field name="id_karyawan" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="id_karyawan"/>
+		<property name="com.jaspersoft.studio.field.label" value="id_karyawan"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="absensi"/>
+	</field>
+	<field name="tanggal" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.name" value="tanggal"/>
+		<property name="com.jaspersoft.studio.field.label" value="tanggal"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="absensi"/>
+	</field>
+	<field name="status" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="status"/>
+		<property name="com.jaspersoft.studio.field.label" value="status"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="absensi"/>
+	</field>
+	<field name="keterangan" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="keterangan"/>
+		<property name="com.jaspersoft.studio.field.label" value="keterangan"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="absensi"/>
+	</field>
+	<background splitType="Stretch"/>
+	<title height="80" splitType="Stretch">
+		<element kind="staticText" uuid="77e1547b-7dfe-47f2-8011-1e626c0e47d8" x="90" y="10" width="379" height="39" fontSize="25.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[PT. Pembawa Berkah]]></text>
+		</element>
+		<element kind="staticText" uuid="963d8d9f-135e-47d2-b023-87a9a9384ca9" x="210" y="40" width="130" height="30" fontSize="19.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[Absensi List]]></text>
+		</element>
+	</title>
+	<pageHeader height="63" splitType="Stretch"/>
+	<columnHeader height="49" splitType="Stretch">
+		<element kind="staticText" uuid="fd0e6c3a-6882-4868-b783-1ef8ea8f2e2d" x="0" y="10" width="91" height="27" fontSize="16.0" bold="true">
+			<text><![CDATA[ID Absensi]]></text>
+		</element>
+		<element kind="staticText" uuid="bcde262e-25ea-4f60-8f7a-f689597dab94" x="100" y="10" width="140" height="27" fontSize="16.0" bold="true">
+			<text><![CDATA[Nama Karyawan]]></text>
+		</element>
+		<element kind="staticText" uuid="d8baf6da-9033-4c29-a99d-0e93c7dbcbcc" x="250" y="10" width="80" height="27" fontSize="16.0" bold="true">
+			<text><![CDATA[Tanggal]]></text>
+		</element>
+		<element kind="staticText" uuid="41a00715-23d8-415b-8809-25704be80fc1" x="350" y="10" width="50" height="27" fontSize="16.0" bold="true">
+			<text><![CDATA[Status]]></text>
+		</element>
+		<element kind="staticText" uuid="d3533ff4-1904-494e-ba61-7ccdb947180b" x="440" y="10" width="94" height="27" fontSize="16.0" bold="true">
+			<text><![CDATA[Keterangan]]></text>
+		</element>
+		<element kind="line" uuid="7fa0a484-a577-48af-8bf0-e25ed9b4e047" x="0" y="40" width="560" height="1">
+			<pen lineWidth="3.0"/>
+		</element>
+	</columnHeader>
+	<detail>
+		<band height="28" splitType="Stretch">
+			<element kind="textField" uuid="9a9bf455-9457-440e-9492-97e3cb925b93" x="0" y="0" width="90" height="20" fontSize="12.0" bold="true" hTextAlign="Center">
+				<expression><![CDATA[$F{id_absensi}]]></expression>
+			</element>
+			<element kind="textField" uuid="967cfcac-c771-4e16-a4fa-baf5984c6351" x="100" y="0" width="140" height="20" fontSize="12.0" bold="true" hTextAlign="Center">
+				<expression><![CDATA[$F{id_karyawan}]]></expression>
+			</element>
+			<element kind="textField" uuid="3fc3c2e6-8390-4395-8ee5-c9c75adec773" x="250" y="0" width="80" height="20" fontSize="12.0" bold="true" hTextAlign="Center">
+				<expression><![CDATA[$F{tanggal}]]></expression>
+			</element>
+			<element kind="textField" uuid="4fe7924d-4784-4aa8-bf94-9f67fb8c59bb" x="350" y="0" width="80" height="20" fontSize="12.0" bold="true" hTextAlign="Center">
+				<expression><![CDATA[$F{status}]]></expression>
+			</element>
+			<element kind="textField" uuid="64216d29-b7d7-433b-85de-5e0cded290aa" x="440" y="0" width="110" height="20" fontSize="12.0" bold="true" hTextAlign="Center">
+				<expression><![CDATA[$F{keterangan}]]></expression>
+			</element>
+		</band>
+	</detail>
+	<columnFooter height="45" splitType="Stretch"/>
+	<pageFooter height="54" splitType="Stretch"/>
+	<summary height="42" splitType="Stretch"/>
+</jasperReport>

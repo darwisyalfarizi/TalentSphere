@@ -1,0 +1,179 @@
+<!-- Created with Jaspersoft Studio version 7.0.1.final using JasperReports Library version 7.0.1-573496633c2b4074e32f433154b543003f7d2498  -->
+<jasperReport name="tes" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="fe67707c-7516-48bf-ad96-6a19f8bb7c7c">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="MYSQL"/>
+	<parameter name="awal" class="java.sql.Date"/>
+	<parameter name="akhir" class="java.sql.Date"/>
+	<query language="SQL"><![CDATA[SELECT 
+    s.kd_slip, 
+    k.kd_karyawan, 
+    k.nama, 
+    s.periode, 
+    s.gaji_pokok, 
+    COALESCE((
+        SELECT SUM(dg.jumlah) 
+        FROM talent_sphere2.detail_gaji dg 
+        WHERE dg.kd_slip = s.kd_slip AND dg.is_tambah = 1
+    ), 0) AS total_tambahan, 
+    COALESCE((
+        SELECT SUM(dg.jumlah) 
+        FROM talent_sphere2.detail_gaji dg 
+        WHERE dg.kd_slip = s.kd_slip AND dg.is_tambah = 0
+    ), 0) AS total_pengurangan, 
+    (s.gaji_pokok + 
+     COALESCE((
+        SELECT SUM(dg.jumlah) 
+        FROM talent_sphere2.detail_gaji dg 
+        WHERE dg.kd_slip = s.kd_slip AND dg.is_tambah = 1
+     ), 0) - 
+     COALESCE((
+        SELECT SUM(dg.jumlah) 
+        FROM talent_sphere2.detail_gaji dg 
+        WHERE dg.kd_slip = s.kd_slip AND dg.is_tambah = 0
+     ), 0)
+    ) AS gaji_bersih
+FROM 
+    talent_sphere2.slip_gaji s 
+JOIN 
+    talent_sphere2.karyawan k ON k.kd_karyawan = s.kd_karyawan
+WHERE 
+    s.periode BETWEEN $P{awal} AND $P{akhir}
+ORDER BY 
+    s.periode DESC]]></query>
+	<field name="kd_slip" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="kd_slip"/>
+		<property name="com.jaspersoft.studio.field.label" value="kd_slip"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="slip_gaji"/>
+	</field>
+	<field name="kd_karyawan" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="kd_karyawan"/>
+		<property name="com.jaspersoft.studio.field.label" value="kd_karyawan"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="karyawan"/>
+	</field>
+	<field name="nama" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="nama"/>
+		<property name="com.jaspersoft.studio.field.label" value="nama"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="karyawan"/>
+	</field>
+	<field name="periode" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.name" value="periode"/>
+		<property name="com.jaspersoft.studio.field.label" value="periode"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="slip_gaji"/>
+	</field>
+	<field name="gaji_pokok" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="gaji_pokok"/>
+		<property name="com.jaspersoft.studio.field.label" value="gaji_pokok"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="slip_gaji"/>
+	</field>
+	<field name="total_tambahan" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="total_tambahan"/>
+		<property name="com.jaspersoft.studio.field.label" value="total_tambahan"/>
+	</field>
+	<field name="total_pengurangan" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="total_pengurangan"/>
+		<property name="com.jaspersoft.studio.field.label" value="total_pengurangan"/>
+	</field>
+	<field name="gaji_bersih" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="gaji_bersih"/>
+		<property name="com.jaspersoft.studio.field.label" value="gaji_bersih"/>
+	</field>
+	<background splitType="Stretch"/>
+	<title height="91" splitType="Stretch">
+		<element kind="staticText" uuid="93ba88a9-2c1e-401a-b95e-3d8f9dad434f" x="90" y="10" width="219" height="30" fontSize="20.0" bold="true" hTextAlign="Left" vTextAlign="Middle">
+			<text><![CDATA[PT. Sumber Makmur]]></text>
+		</element>
+		<element kind="staticText" uuid="d6533f78-18e5-42f6-bc3d-581e85ea7c4e" x="90" y="40" width="466" height="30" fontSize="10.0" bold="true" hTextAlign="Left" vTextAlign="Middle">
+			<text><![CDATA[Jl. AMD Cibentang, Cibentang, Kec. Ciseeng, Kabupaten Bogor, Jawa Barat 16120]]></text>
+		</element>
+		<element kind="image" uuid="72123527-790f-452e-a92f-9b8f6f434af1" x="0" y="0" width="80" height="80">
+			<expression><![CDATA["logo.png"]]></expression>
+		</element>
+	</title>
+	<pageHeader height="54" splitType="Stretch">
+		<element kind="staticText" uuid="b5770ede-c8e0-4a95-b586-1ed0542232a7" x="340" y="14" width="50" height="20" fontSize="12.0" vTextAlign="Middle">
+			<text><![CDATA[Tanggal Laporan : ]]></text>
+		</element>
+		<element kind="textField" uuid="b754c039-8412-403d-ae8c-56ff7c73bb9f" x="390" y="14" width="70" height="20" fontSize="12.0" vTextAlign="Middle">
+			<expression><![CDATA[$P{awal}]]></expression>
+			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="5602b6ee-fd34-4e5a-b563-79c260c3729b"/>
+		</element>
+		<element kind="staticText" uuid="f7dbf7dc-75ab-4cab-8695-03a8db3c2768" x="460" y="14" width="20" height="20" fontSize="12.0" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[-]]></text>
+		</element>
+		<element kind="textField" uuid="1d01bfce-b727-4253-ab9d-34660eb659b7" x="480" y="14" width="76" height="20" fontSize="12.0" vTextAlign="Middle">
+			<expression><![CDATA[$P{akhir}]]></expression>
+			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="5602b6ee-fd34-4e5a-b563-79c260c3729b"/>
+		</element>
+		<element kind="line" uuid="e7cd5704-4d7f-4c92-8b86-40109041db6b" x="0" y="48" width="556" height="1"/>
+		<element kind="staticText" uuid="dbeadde9-413c-4378-8f4e-78287d39bb59" x="0" y="5" width="219" height="39" fontSize="16.0" bold="true" hTextAlign="Left" vTextAlign="Middle">
+			<text><![CDATA[Laporan Penggajian]]></text>
+		</element>
+		<element kind="line" uuid="301d2089-f855-42c6-b6a0-33643db364f1" x="0" y="0" width="556" height="1"/>
+	</pageHeader>
+	<columnHeader height="26" splitType="Stretch">
+		<element kind="staticText" uuid="03bdb5d1-2100-4e6b-88ef-9add1252c5a9" x="60" y="0" width="90" height="20" fontSize="10.0" bold="true" hTextAlign="Left" vTextAlign="Middle">
+			<text><![CDATA[Nama]]></text>
+			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="42543974-f8d5-4f88-8dac-c74e880eef3a"/>
+		</element>
+		<element kind="staticText" uuid="7ecaaf17-77ae-4f59-b511-87452e3c35f8" x="238" y="0" width="71" height="20" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[Gaji Pokok]]></text>
+			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="5602b6ee-fd34-4e5a-b563-79c260c3729b"/>
+		</element>
+		<element kind="staticText" uuid="2df608a1-25e5-4d7f-be08-d1db8a430f27" x="319" y="0" width="71" height="20" fontSize="10.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[Penambahan]]></text>
+			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="33c5fa1e-97fc-4e15-a0c5-c2218f5f4610"/>
+		</element>
+		<element kind="staticText" uuid="3087d864-3755-484a-9eb2-563091d09523" x="480" y="0" width="76" height="20" fontSize="10.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[Total]]></text>
+			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0ce3f55c-dfe5-476a-95ae-9babd482819d"/>
+		</element>
+		<element kind="line" uuid="331dec73-5b86-402e-82e3-c0d0d74d12e8" x="0" y="25" width="556" height="1"/>
+		<element kind="staticText" uuid="fb575023-80eb-4920-a72a-90b24e205709" x="0" y="-1" width="50" height="20" fontSize="10.0" bold="true" hTextAlign="Left" vTextAlign="Middle">
+			<text><![CDATA[Kode Slip]]></text>
+			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="42543974-f8d5-4f88-8dac-c74e880eef3a"/>
+		</element>
+		<element kind="staticText" uuid="c4ddcf3e-c202-41bf-99f2-743f70abde24" x="400" y="0" width="70" height="20" fontSize="10.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[Pengurangan]]></text>
+			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0ce3f55c-dfe5-476a-95ae-9babd482819d"/>
+		</element>
+		<element kind="staticText" uuid="3f06d39d-bf6c-4620-b7d1-e79f39bf50f8" x="160" y="0" width="71" height="20" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[Periode]]></text>
+			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="5602b6ee-fd34-4e5a-b563-79c260c3729b"/>
+		</element>
+	</columnHeader>
+	<detail>
+		<band height="38" splitType="Stretch">
+			<element kind="textField" uuid="e1936f4f-2b04-48ef-8766-c2040b979cb1" x="60" y="9" width="90" height="20" fontSize="10.0" vTextAlign="Top">
+				<expression><![CDATA[$F{nama}]]></expression>
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="42543974-f8d5-4f88-8dac-c74e880eef3a"/>
+			</element>
+			<element kind="textField" uuid="66360210-0649-4caa-9f15-bed1445b3296" x="238" y="10" width="71" height="20" fontSize="10.0" hTextAlign="Center" vTextAlign="Top">
+				<expression><![CDATA["Rp. " + new java.text.DecimalFormat("#,##0").format($F{gaji_pokok})]]></expression>
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="5602b6ee-fd34-4e5a-b563-79c260c3729b"/>
+			</element>
+			<element kind="textField" uuid="10b660aa-4038-450b-b06b-f20221361ee9" x="319" y="9" width="71" height="20" fontSize="10.0" hTextAlign="Left" vTextAlign="Top">
+				<expression><![CDATA["Rp. " + new java.text.DecimalFormat("#,##0").format($F{total_tambahan})]]></expression>
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="33c5fa1e-97fc-4e15-a0c5-c2218f5f4610"/>
+			</element>
+			<element kind="textField" uuid="ee021e3a-42ad-4caa-b72c-7cb24b14065e" x="480" y="10" width="76" height="20" fontSize="10.0" hTextAlign="Left" vTextAlign="Top">
+				<expression><![CDATA["Rp. " + new java.text.DecimalFormat("#,##0").format($F{gaji_bersih})]]></expression>
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0ce3f55c-dfe5-476a-95ae-9babd482819d"/>
+			</element>
+			<element kind="textField" uuid="7fd362f9-6045-4318-aeb0-e092df21d4be" x="0" y="9" width="50" height="20" fontSize="10.0" vTextAlign="Top">
+				<expression><![CDATA[$F{kd_slip}]]></expression>
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="42543974-f8d5-4f88-8dac-c74e880eef3a"/>
+			</element>
+			<element kind="textField" uuid="cbca7ade-34b5-4180-a90d-76b127087445" x="400" y="9" width="70" height="20" fontSize="10.0" vTextAlign="Top">
+				<expression><![CDATA["Rp. " + new java.text.DecimalFormat("#,##0").format($F{total_pengurangan})]]></expression>
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0ce3f55c-dfe5-476a-95ae-9babd482819d"/>
+			</element>
+			<element kind="textField" uuid="0bb69a2b-a605-40f2-accd-062588b81ae7" x="160" y="10" width="71" height="20" fontSize="10.0" hTextAlign="Center" vTextAlign="Top">
+				<expression><![CDATA[$F{periode}]]></expression>
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="5602b6ee-fd34-4e5a-b563-79c260c3729b"/>
+			</element>
+		</band>
+	</detail>
+	<columnFooter height="219" splitType="Stretch"/>
+	<pageFooter height="54" splitType="Stretch"/>
+	<summary height="42" splitType="Stretch"/>
+</jasperReport>

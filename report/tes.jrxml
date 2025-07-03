@@ -1,0 +1,121 @@
+<!-- Created with Jaspersoft Studio version 7.0.1.final using JasperReports Library version 7.0.1-573496633c2b4074e32f433154b543003f7d2498  -->
+<jasperReport name="tes" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="fe67707c-7516-48bf-ad96-6a19f8bb7c7c">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="MYSQL"/>
+	<parameter name="awal" class="java.sql.Date"/>
+	<parameter name="akhir" class="java.sql.Date"/>
+	<query language="SQL"><![CDATA[SELECT talent_sphere2.karyawan.nama,
+	talent_sphere2.karyawan.kd_karyawan,
+	talent_sphere2.absensi.kd_absensi,
+	talent_sphere2.absensi.kd_karyawan,
+	talent_sphere2.absensi.tanggal,
+	talent_sphere2.absensi.status,
+	talent_sphere2.absensi.keterangan
+FROM talent_sphere2.absensi
+	INNER JOIN talent_sphere2.karyawan ON 
+	 talent_sphere2.absensi.kd_karyawan = talent_sphere2.karyawan.kd_karyawan
+	WHERE talent_sphere2.absensi.tanggal BETWEEN $P{awal} AND $P{akhir}
+	
+	 ]]></query>
+	<field name="nama" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="nama"/>
+		<property name="com.jaspersoft.studio.field.label" value="nama"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="karyawan"/>
+	</field>
+	<field name="kd_karyawan" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="kd_karyawan"/>
+		<property name="com.jaspersoft.studio.field.label" value="kd_karyawan"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="karyawan"/>
+	</field>
+	<field name="kd_absensi" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="kd_absensi"/>
+		<property name="com.jaspersoft.studio.field.label" value="kd_absensi"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="absensi"/>
+	</field>
+	<field name="COLUMN_4" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="kd_karyawan"/>
+		<property name="com.jaspersoft.studio.field.label" value="kd_karyawan"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="absensi"/>
+	</field>
+	<field name="tanggal" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.name" value="tanggal"/>
+		<property name="com.jaspersoft.studio.field.label" value="tanggal"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="absensi"/>
+	</field>
+	<field name="status" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="status"/>
+		<property name="com.jaspersoft.studio.field.label" value="status"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="absensi"/>
+	</field>
+	<field name="keterangan" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="keterangan"/>
+		<property name="com.jaspersoft.studio.field.label" value="keterangan"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="absensi"/>
+	</field>
+	<background splitType="Stretch"/>
+	<title height="79" splitType="Stretch">
+		<element kind="staticText" uuid="dbeadde9-413c-4378-8f4e-78287d39bb59" x="100" y="0" width="379" height="39" fontSize="25.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[Laporan Absensi]]></text>
+		</element>
+		<element kind="staticText" uuid="bde07fcd-bd5c-4815-9020-b3071848cd7d" x="220" y="30" width="130" height="30" fontSize="19.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[PT. XYZ]]></text>
+		</element>
+	</title>
+	<pageHeader height="44" splitType="Stretch">
+		<element kind="staticText" uuid="b5770ede-c8e0-4a95-b586-1ed0542232a7" x="0" y="0" width="90" height="20">
+			<text><![CDATA[Tanggal Laporan : ]]></text>
+		</element>
+		<element kind="textField" uuid="b754c039-8412-403d-ae8c-56ff7c73bb9f" x="90" y="0" width="70" height="20">
+			<expression><![CDATA[$P{awal}]]></expression>
+			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="5602b6ee-fd34-4e5a-b563-79c260c3729b"/>
+		</element>
+		<element kind="staticText" uuid="f7dbf7dc-75ab-4cab-8695-03a8db3c2768" x="160" y="0" width="20" height="20" hTextAlign="Center">
+			<text><![CDATA[-]]></text>
+		</element>
+		<element kind="textField" uuid="1d01bfce-b727-4253-ab9d-34660eb659b7" x="180" y="0" width="70" height="20">
+			<expression><![CDATA[$P{akhir}]]></expression>
+			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="5602b6ee-fd34-4e5a-b563-79c260c3729b"/>
+		</element>
+	</pageHeader>
+	<columnHeader height="23" splitType="Stretch">
+		<element kind="staticText" uuid="03bdb5d1-2100-4e6b-88ef-9add1252c5a9" x="0" y="0" width="100" height="20" bold="true">
+			<text><![CDATA[Nama]]></text>
+			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="42543974-f8d5-4f88-8dac-c74e880eef3a"/>
+		</element>
+		<element kind="staticText" uuid="7ecaaf17-77ae-4f59-b511-87452e3c35f8" x="100" y="0" width="100" height="20" bold="true">
+			<text><![CDATA[Tanggal]]></text>
+			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="5602b6ee-fd34-4e5a-b563-79c260c3729b"/>
+		</element>
+		<element kind="staticText" uuid="2df608a1-25e5-4d7f-be08-d1db8a430f27" x="200" y="0" width="100" height="20" bold="true">
+			<text><![CDATA[Status]]></text>
+			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="33c5fa1e-97fc-4e15-a0c5-c2218f5f4610"/>
+		</element>
+		<element kind="staticText" uuid="3087d864-3755-484a-9eb2-563091d09523" x="300" y="0" width="179" height="20" bold="true">
+			<text><![CDATA[Keterangan]]></text>
+			<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0ce3f55c-dfe5-476a-95ae-9babd482819d"/>
+		</element>
+	</columnHeader>
+	<detail>
+		<band height="25" splitType="Stretch">
+			<element kind="textField" uuid="e1936f4f-2b04-48ef-8766-c2040b979cb1" x="0" y="0" width="100" height="20">
+				<expression><![CDATA[$F{nama}]]></expression>
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="42543974-f8d5-4f88-8dac-c74e880eef3a"/>
+			</element>
+			<element kind="textField" uuid="66360210-0649-4caa-9f15-bed1445b3296" x="100" y="0" width="100" height="20">
+				<expression><![CDATA[$F{tanggal}]]></expression>
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="5602b6ee-fd34-4e5a-b563-79c260c3729b"/>
+			</element>
+			<element kind="textField" uuid="10b660aa-4038-450b-b06b-f20221361ee9" x="200" y="0" width="100" height="20">
+				<expression><![CDATA[$F{status}]]></expression>
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="33c5fa1e-97fc-4e15-a0c5-c2218f5f4610"/>
+			</element>
+			<element kind="textField" uuid="ee021e3a-42ad-4caa-b72c-7cb24b14065e" x="300" y="0" width="179" height="20">
+				<expression><![CDATA[$F{keterangan}]]></expression>
+				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0ce3f55c-dfe5-476a-95ae-9babd482819d"/>
+			</element>
+		</band>
+	</detail>
+	<columnFooter height="45" splitType="Stretch"/>
+	<pageFooter height="54" splitType="Stretch"/>
+	<summary height="42" splitType="Stretch"/>
+</jasperReport>

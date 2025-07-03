@@ -1,0 +1,83 @@
+<!-- Created with Jaspersoft Studio version 7.0.1.final using JasperReports Library version 7.0.1-573496633c2b4074e32f433154b543003f7d2498  -->
+<jasperReport name="Blank_A4" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a583c3c7-7b08-4381-ab3a-84d87e1eec84">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="MYSQL"/>
+	<query language="SQL"><![CDATA[SELECT a.id_absensi, k.nama, a.tanggal, a.status, a.keterangan FROM absensi a JOIN karyawan k ON k.id_karyawan = a.id_karyawan]]></query>
+	<field name="id_absensi" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="id_absensi"/>
+		<property name="com.jaspersoft.studio.field.label" value="id_absensi"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="absensi"/>
+	</field>
+	<field name="nama" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="nama"/>
+		<property name="com.jaspersoft.studio.field.label" value="nama"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="karyawan"/>
+	</field>
+	<field name="tanggal" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.name" value="tanggal"/>
+		<property name="com.jaspersoft.studio.field.label" value="tanggal"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="absensi"/>
+	</field>
+	<field name="status" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="status"/>
+		<property name="com.jaspersoft.studio.field.label" value="status"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="absensi"/>
+	</field>
+	<field name="keterangan" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="keterangan"/>
+		<property name="com.jaspersoft.studio.field.label" value="keterangan"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="absensi"/>
+	</field>
+	<background splitType="Stretch"/>
+	<title height="80" splitType="Stretch">
+		<element kind="staticText" uuid="ac6da481-932d-4bbe-af45-ca35493d6fa3" x="90" y="10" width="379" height="39" fontSize="25.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[PT. Pembawa Berkah]]></text>
+		</element>
+		<element kind="staticText" uuid="d5e1dbdf-2998-45fa-b5ee-9347b116fde2" x="210" y="50" width="130" height="30" fontSize="19.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[Absensi List]]></text>
+		</element>
+	</title>
+	<pageHeader height="35" splitType="Stretch"/>
+	<columnHeader height="61" splitType="Stretch">
+		<element kind="staticText" uuid="098470d6-ddd7-40a4-996c-c77d15319dea" x="0" y="34" width="91" height="27" fontSize="16.0" bold="true">
+			<text><![CDATA[ID Absensi]]></text>
+		</element>
+		<element kind="staticText" uuid="47d7548d-0ab9-4a13-8b27-bdc834b25522" x="250" y="34" width="80" height="27" fontSize="16.0" bold="true">
+			<text><![CDATA[Tanggal]]></text>
+		</element>
+		<element kind="staticText" uuid="e4e63814-d369-4b6f-815c-059a1721ce48" x="100" y="34" width="140" height="27" fontSize="16.0" bold="true">
+			<text><![CDATA[Nama Karyawan]]></text>
+		</element>
+		<element kind="staticText" uuid="4f60761c-804e-4141-9c7a-c4de45659038" x="440" y="34" width="94" height="27" fontSize="16.0" bold="true">
+			<text><![CDATA[Keterangan]]></text>
+		</element>
+		<element kind="staticText" uuid="a4513aac-b020-4fc9-b382-c994e4b2c892" x="350" y="34" width="50" height="27" fontSize="16.0" bold="true">
+			<text><![CDATA[Status]]></text>
+		</element>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch">
+			<element kind="textField" uuid="9e2a6291-b0b2-4bab-b573-0625241976a4" x="100" y="20" width="140" height="20" fontSize="12.0" bold="true" hTextAlign="Center">
+				<expression><![CDATA[$F{nama}]]></expression>
+			</element>
+			<element kind="textField" uuid="fd3922b6-1d4f-4dac-a564-9576deccda98" x="350" y="20" width="80" height="20" fontSize="12.0" bold="true" hTextAlign="Center">
+				<expression><![CDATA[$F{status}]]></expression>
+			</element>
+			<element kind="textField" uuid="0f3d642d-1eb0-49f5-9742-c51bc55ecb1a" x="440" y="20" width="110" height="20" fontSize="12.0" bold="true" hTextAlign="Center">
+				<expression><![CDATA[$F{keterangan}]]></expression>
+			</element>
+			<element kind="textField" uuid="6a228f38-f963-4294-8f30-768ae4b422f4" x="250" y="20" width="80" height="20" fontSize="12.0" bold="true" hTextAlign="Center">
+				<expression><![CDATA[$F{tanggal}]]></expression>
+			</element>
+			<element kind="textField" uuid="039cbb1a-5b72-4f71-9ff7-1817a82ecd7c" x="0" y="20" width="90" height="20" fontSize="12.0" bold="true" hTextAlign="Center">
+				<expression><![CDATA[$F{id_absensi}]]></expression>
+			</element>
+			<element kind="line" uuid="7a8e1698-52b4-4986-8724-d5f919c6a1bc" x="0" y="5" width="560" height="1">
+				<pen lineWidth="3.0"/>
+			</element>
+		</band>
+	</detail>
+	<columnFooter height="45" splitType="Stretch"/>
+	<pageFooter height="54" splitType="Stretch"/>
+	<summary height="42" splitType="Stretch"/>
+</jasperReport>
