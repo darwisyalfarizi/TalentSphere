@@ -2,7 +2,7 @@
 
 ![Java](https://img.shields.io/badge/Java-17-blue)
 ![MySQL](https://img.shields.io/badge/MySQL-8.0-orange)
-![JasperReports](https://img.shields.io/badge/JasperReports-6.19.0-brightgreen)
+![JasperReports](https://img.shields.io/badge/JasperReports-7.0.1-brightgreen)
 
 TalentSphere is a desktop-based Human Resources Management System (HRMS) developed with Java Swing for the UI and MySQL for database storage.
 
@@ -78,13 +78,6 @@ TalentSphere is a desktop-based Human Resources Management System (HRMS) develop
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Contact
-
-For support or contributions:
-
-- **Name:** Darwisy Alfarizi  
-- **GitHub:** [@darwisyalfarizi](https://github.com/darwisyalfarizi)  
 
 ---
 
