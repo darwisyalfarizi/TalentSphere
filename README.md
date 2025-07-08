@@ -71,7 +71,7 @@ TalentSphere is a desktop-based Human Resources Management System (HRMS) develop
 
 | Description | Preview |
 |-------------|---------|
-| **Login Application ** | ![Login](src/main/resources/images/screenshots/login.png) |
+| **Login Application** | ![Login](src/main/resources/images/screenshots/login.png) |
 | **Main Application Dashboard** | ![Dashboard](src/main/resources/images/screenshots/dashboard.png) |
 | **Employee Management Screen** | ![Employee Management](src/main/resources/images/screenshots/karyawan.png) |
 
