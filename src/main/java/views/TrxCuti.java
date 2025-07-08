@@ -5,13 +5,16 @@
 package views;
 
 
+import config.DatabaseConnection;
 import controllers.CutiController;
 
 import controllers.KaryawanController;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -47,6 +50,9 @@ public class TrxCuti extends javax.swing.JPanel {
         loadCuti();
         loadComboStatus();
         loadComboKaryawan();
+        
+    tambahTanggalM.setDate(LocalDate.now());
+    tambahTanggalS.setDate(LocalDate.now());
         
     }
     
@@ -99,7 +105,7 @@ public class TrxCuti extends javax.swing.JPanel {
 
         panelView.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel1.setText("Transaksi> Cuti");
+        jLabel1.setText("Transaksi > Cuti");
         jLabel1.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
 
         jLabel2.setText("Data Cuti");
@@ -426,8 +432,11 @@ public class TrxCuti extends javax.swing.JPanel {
         panelMain.add(panelAdd);
         panelMain.repaint();
         panelMain.revalidate();
-        
-        
+
+        // Set dates to today when adding new data
+        tambahTanggalM.setDate(LocalDate.now());
+        tambahTanggalS.setDate(LocalDate.now());
+
         if (btnTambah.getText().equals("Ubah")) {
             dataTable(); 
             btnSimpan.setText("Perbarui");
@@ -481,42 +490,89 @@ public class TrxCuti extends javax.swing.JPanel {
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnAjukanCutiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAjukanCutiActionPerformed
-      try {
-    // 1. Prepare parameters
-    Map<String, Object> parameter = new HashMap<String, Object>();
-    
-    // Get selected leave ID from table
-    String selectedKdCuti = tabelCuti.getValueAt(tabelCuti.getSelectedRow(), 0).toString().trim();
-    System.out.println("Debug - Selected kd_cuti: " + selectedKdCuti);
-    parameter.put("kd_cuti", selectedKdCuti);
+        Connection conn = null;
+       PreparedStatement checkStmt = null;
+       ResultSet rs = null;
 
-    // 2. Database connection
-    Class.forName("com.mysql.cj.jdbc.Driver");
-    Connection conn = DriverManager.getConnection(
-        "jdbc:mysql://localhost:3306/talent_sphere2",
-        "root", 
-        ""
-    );
+       try {
+           // 1. Validate row selection
+           if (tabelCuti.getSelectedRow() == -1) {
+               JOptionPane.showMessageDialog(null, 
+                   "Please select a leave request first!", 
+                   "Warning", 
+                   JOptionPane.WARNING_MESSAGE);
+               return;
+           }
 
+           // 2. Prepare parameters
+           Map<String, Object> parameters = new HashMap<>();
+           String selectedKdCuti = tabelCuti.getValueAt(tabelCuti.getSelectedRow(), 1).toString().trim();
+           parameters.put("kd_cuti", selectedKdCuti);
 
+           // 3. Get connection from centralized config
+           conn = DatabaseConnection.getConnection();
 
-    String reportPath = "C:\\Users\\darwi\\Documents\\NetBeansProjects\\TalentSphere\\report\\PengajuanCuti.jrxml";
-    JasperReport jr = JasperCompileManager.compileReport(reportPath);
-    JasperPrint jp = JasperFillManager.fillReport(jr, parameter, conn);
+           // 4. Verify data exists in database
+           String checkSql = "SELECT COUNT(*) FROM cuti WHERE kd_cuti = ?";
+           checkStmt = conn.prepareStatement(checkSql);
+           checkStmt.setString(1, selectedKdCuti);
+           rs = checkStmt.executeQuery();
 
-    if (jp.getPages().isEmpty()) {
-        JOptionPane.showMessageDialog(null, "Report generated but empty for leave ID: " + selectedKdCuti);
-    } else {
-        JasperViewer viewer = new JasperViewer(jp, false);
-        viewer.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        viewer.setVisible(true);
-    }
+           if (rs.next() && rs.getInt(1) == 0) {
+               JOptionPane.showMessageDialog(null, 
+                   "No leave request found with ID: " + selectedKdCuti, 
+                   "Data Not Found", 
+                   JOptionPane.WARNING_MESSAGE);
+               return;
+           }
 
-    conn.close();
-} catch (Exception e) {
-    JOptionPane.showMessageDialog(null, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-    e.printStackTrace();
-}
+           // 5. Load and compile report from classpath
+           InputStream reportStream = getClass().getClassLoader()
+               .getResourceAsStream("reports/PengajuanCuti.jrxml");
+
+           if (reportStream == null) {
+               throw new RuntimeException("Report template 'PengajuanCuti.jrxml' not found in resources!");
+           }
+
+           JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
+
+           // 6. Fill and display report
+           JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, conn);
+
+           if (jasperPrint.getPages().isEmpty()) {
+               JOptionPane.showMessageDialog(null,
+                   "The report is empty for leave ID: " + selectedKdCuti +
+                   "\nPlease check:\n1. Report design parameters\n2. Database records",
+                   "Empty Report",
+                   JOptionPane.WARNING_MESSAGE);
+           } else {
+               JasperViewer viewer = new JasperViewer(jasperPrint, false);
+               viewer.setTitle("Leave Request - ID: " + selectedKdCuti);
+               viewer.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+               viewer.setVisible(true);
+           }
+       } catch (SQLException e) {
+           JOptionPane.showMessageDialog(null,
+               "Database error: " + e.getMessage(),
+               "Database Error",
+               JOptionPane.ERROR_MESSAGE);
+           e.printStackTrace();
+       } catch (Exception e) {
+           JOptionPane.showMessageDialog(null,
+               "Report generation failed: " + e.getMessage(),
+               "Error",
+               JOptionPane.ERROR_MESSAGE);
+           e.printStackTrace();
+       } finally {
+           // 7. Clean up resources
+           try {
+               if (rs != null) rs.close();
+               if (checkStmt != null) checkStmt.close();
+               if (conn != null) conn.close();
+           } catch (SQLException e) {
+               System.err.println("Error closing resources: " + e.getMessage());
+           }
+       }
     }//GEN-LAST:event_btnAjukanCutiActionPerformed
 
 
@@ -567,57 +623,64 @@ public class TrxCuti extends javax.swing.JPanel {
     }
     
     private void loadCuti() {
-           
         btnBatal.setVisible(false);
         btnDelete.setVisible(false);
         btnAjukanCuti.setVisible(false);
         CutiController cutiController = new CutiController();
         List<Cuti> cutis = cutiController.getAllCuti();
-        
+
         DefaultTableModel model = (DefaultTableModel)tabelCuti.getModel(); 
         model.setRowCount(0);
-        
+
         if (cutis != null) {
+            int number = 1;
             for (Cuti cuti : cutis) {
                 model.addRow(new Object[]{
+                    number++,
                     cuti.getKdCuti(),
                     cuti.getKaryawan(),
                     cuti.getTanggalMulai(),
                     cuti.getTanggalSelesai(),
                     cuti.getKeterangan(),
                     cuti.getStatus(),
-                    
                 });
             }
         }
-
-        
     }
 
-    private void setTableCuti() {
-        DefaultTableModel model = new DefaultTableModel();
-        model.addColumn("Kode Cuti");
-        model.addColumn("Nama Karyawan");
-        model.addColumn("Tanggal Mulai");
-        model.addColumn("Tanggal Selesai");
-        model.addColumn("Keterangan");
-        model.addColumn("Status");
-        
+        private void setTableCuti() {
+         DefaultTableModel model = new DefaultTableModel() {
+             @Override
+             public boolean isCellEditable(int row, int column) {
+                 return false; // Make all cells non-editable
+             }
+         };
+         model.addColumn("No");
+         model.addColumn("Kode Cuti");
+         model.addColumn("Nama Karyawan");
+         model.addColumn("Tanggal Mulai");
+         model.addColumn("Tanggal Selesai");
+         model.addColumn("Keterangan");
+         model.addColumn("Status");
+
         tabelCuti.setModel(model);
-        
-    }
+        tabelCuti.getColumnModel().getColumn(0).setPreferredWidth(10);   
+        tabelCuti.getColumnModel().getColumn(1).setPreferredWidth(80);   
+        tabelCuti.getColumnModel().getColumn(2).setPreferredWidth(150);  
+        tabelCuti.getColumnModel().getColumn(3).setPreferredWidth(100);  
+        tabelCuti.getColumnModel().getColumn(4).setPreferredWidth(100);  
+        tabelCuti.getColumnModel().getColumn(5).setPreferredWidth(150);  
+        tabelCuti.getColumnModel().getColumn(5).setPreferredWidth(100);  
+     }
 
     private void resetForm() {
-         
-        
         tambahKeterangan.setText("");
         // Reset combo boxes
-        
         tambahStatus.setSelectedIndex(0);
         tambahKaryawan.setSelectedIndex(0);
-        // Reset date pickers
-        tambahTanggalM.setDate(null);
-       
+        // Reset date pickers to today
+        tambahTanggalM.setDate(LocalDate.now());
+        tambahTanggalS.setDate(LocalDate.now());
         // Reset focus
         tambahKdCuti.requestFocusInWindow();
     }
@@ -632,8 +695,10 @@ public class TrxCuti extends javax.swing.JPanel {
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
+        int number = 1;
         for (Cuti cuti : cutis) {
             model.addRow(new Object[]{
+                number++,
                 cuti.getKdCuti(), 
                 cuti.getKaryawan(),
                 cuti.getTanggalMulai() != null ? dateFormat.format(cuti.getTanggalMulai()) : "",
@@ -645,55 +710,50 @@ public class TrxCuti extends javax.swing.JPanel {
     }
 
      
-private void dataTable() {
-    panelView.setVisible(false);
-    panelAdd.setVisible(true);
-    
-    int row = tabelCuti.getSelectedRow();
-    if (row < 0) {
-        JOptionPane.showMessageDialog(this, "Pilih data karyawan terlebih dahulu!");
-        return;
-    }
+    private void dataTable() {
+        panelView.setVisible(false);
+        panelAdd.setVisible(true);
 
-    jLabel4.setText("Ubah Data Cuti");
-
-    // Get ID from hidden column
-    String kd = tabelCuti.getValueAt(row, 0).toString();
-    tambahKdCuti.setText(String.valueOf(kd));
-
-
-    // Set basic fields
-    tambahKeterangan.setText(tabelCuti.getValueAt(row, 4).toString());
-
-    // Set combo boxes
-    setComboFromTable(tambahKaryawan, tabelCuti.getValueAt(row, 1).toString());
-    setComboFromTable(tambahStatus, tabelCuti.getValueAt(row, 5).toString());
-    
-
-    // Set dates
-    try {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        
-        // Handle possible null dates
-        if (tabelCuti.getValueAt(row, 2) != null) {
-            Date tgl = sdf.parse(tabelCuti.getValueAt(row, 2).toString());
-            tambahTanggalM.setDate(tgl.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-            
+        int row = tabelCuti.getSelectedRow();
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this, "Pilih data karyawan terlebih dahulu!");
+            return;
         }
-        if (tabelCuti.getValueAt(row, 3) != null) {
-            Date tgl = sdf.parse(tabelCuti.getValueAt(row, 3).toString());
-            tambahTanggalS.setDate(tgl.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-            
-        }
-        
-        
-    } catch (Exception ex) {
-        JOptionPane.showMessageDialog(this, "Error parsing dates: " + ex.getMessage());
-        ex.printStackTrace();
-    }
 
-    btnSimpan.setText("Perbarui");
-}
+        jLabel4.setText("Ubah Data Cuti");
+
+        // Get ID from column 1 (since column 0 is now the numbering)
+        String kd = tabelCuti.getValueAt(row, 1).toString();
+        tambahKdCuti.setText(String.valueOf(kd));
+
+        // Set basic fields
+        tambahKeterangan.setText(tabelCuti.getValueAt(row, 5).toString());
+
+        // Set combo boxes
+        setComboFromTable(tambahKaryawan, tabelCuti.getValueAt(row, 2).toString());
+        setComboFromTable(tambahStatus, tabelCuti.getValueAt(row, 6).toString());
+
+        // Set dates
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+            // Handle possible null dates
+            if (tabelCuti.getValueAt(row, 3) != null) {
+                Date tgl = sdf.parse(tabelCuti.getValueAt(row, 3).toString());
+                tambahTanggalM.setDate(tgl.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+            }
+            if (tabelCuti.getValueAt(row, 4) != null) {
+                Date tgl = sdf.parse(tabelCuti.getValueAt(row, 4).toString());
+                tambahTanggalS.setDate(tgl.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+            }
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error parsing dates: " + ex.getMessage());
+            ex.printStackTrace();
+        }
+
+        btnSimpan.setText("Perbarui");
+    }
     
     private void insertData() {
     try {
@@ -809,38 +869,35 @@ private void dataTable() {
 }
  
  
- private void deleteData() {
-        int selectedRow = tabelCuti.getSelectedRow();
-        int confirm = JOptionPane.showConfirmDialog(this, "Apakah anda ingin menghapus data ini ?",
-                "Konfirmasi Hapus Data", JOptionPane.YES_NO_OPTION);
-        if (confirm == JOptionPane.YES_OPTION) {
-            try {
-                
-                String kdStr = tabelCuti.getValueAt(selectedRow, 0).toString();
-                
+    private void deleteData() {
+       int selectedRow = tabelCuti.getSelectedRow();
+       int confirm = JOptionPane.showConfirmDialog(this, "Apakah anda ingin menghapus data ini ?",
+               "Konfirmasi Hapus Data", JOptionPane.YES_NO_OPTION);
+       if (confirm == JOptionPane.YES_OPTION) {
+           try {
+               // Now kdCuti is in column 1 (column 0 is the numbering)
+               String kdStr = tabelCuti.getValueAt(selectedRow, 1).toString();
 
-                CutiController cutiController = new CutiController();
-                boolean success = cutiController.deleteCuti(kdStr);
+               CutiController cutiController = new CutiController();
+               boolean success = cutiController.deleteCuti(kdStr);
 
-                if (success) {
-                    JOptionPane.showMessageDialog(this, "Data berhasil dihapus!");
-                    loadCuti(); 
-                    resetForm(); 
-                    showPanelView();
-                    btnTambah.setText("Tambah");
-
-                } else {
-                    JOptionPane.showMessageDialog(this, "Gagal menghapus data.", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Terjadi kesalahan: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }
-    
+               if (success) {
+                   JOptionPane.showMessageDialog(this, "Data berhasil dihapus!");
+                   loadCuti(); 
+                   resetForm(); 
+                   showPanelView();
+                   btnTambah.setText("Tambah");
+               } else {
+                   JOptionPane.showMessageDialog(this, "Gagal menghapus data.", "Error", JOptionPane.ERROR_MESSAGE);
+               }
+           } catch (Exception e) {
+               JOptionPane.showMessageDialog(this, "Terjadi kesalahan: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+           }
+       }
+   }
 private void loadComboKaryawan() {
     KaryawanController controller = new KaryawanController();
-    List<Karyawan> karyawanList = controller.getAllKaryawan();
+    List<Karyawan> karyawanList = controller.getAllKaryawanForComboBox();
 
     tambahKaryawan.removeAllItems();
     for (Karyawan karyawan : karyawanList) {

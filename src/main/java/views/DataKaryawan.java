@@ -7,12 +7,15 @@ package views;
 
 
 
+import config.DatabaseConnection;
 import controllers.DepartemenController;
 import controllers.JabatanController;
 import controllers.KaryawanController;
-import controllers.UserController;
+import java.io.InputStream;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -28,7 +31,7 @@ import javax.swing.table.DefaultTableModel;
 import models.Departemen;
 import models.Jabatan;
 import models.Karyawan;
-import models.User;
+
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -526,6 +529,7 @@ public class DataKaryawan extends javax.swing.JPanel {
         if (btnTambah.getText().equals("Ubah")) {
             dataTable(); 
             btnSimpan.setText("Perbarui");
+            tambahKD.setEditable(false);
         } else {
             resetForm(); 
             btnSimpan.setText("Simpan");
@@ -595,40 +599,54 @@ public class DataKaryawan extends javax.swing.JPanel {
     }//GEN-LAST:event_tambahDepartemenActionPerformed
 
     private void btnKontrakActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKontrakActionPerformed
+        Connection conn = null;
         try {
-            // 1. Prepare parameters
-            Map<String, Object> parameter = new HashMap<String, Object>();
-
-            
-            // Get selected leave ID from table (column 1 is kdKaryawan)
-            String selectedKdKaryawan = tabelKaryawan.getValueAt(tabelKaryawan.getSelectedRow(), 1).toString().trim();
-            System.out.println("Debug - Selected kd_karyawan: " + selectedKdKaryawan);
-            parameter.put("kd_karyawan", selectedKdKaryawan);
-
-            // 2. Database connection
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/talent_sphere2",
-                "root",
-                ""
-            );
-
-            String reportPath = "C:\\Users\\darwi\\Documents\\NetBeansProjects\\TalentSphere\\report\\SuratKontrak.jrxml";
-            JasperReport jr = JasperCompileManager.compileReport(reportPath);
-            JasperPrint jp = JasperFillManager.fillReport(jr, parameter, conn);
-
-            if (jp.getPages().isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Report generated but empty for leave ID: " + selectedKdKaryawan);
-            } else {
-                JasperViewer viewer = new JasperViewer(jp, false);
-                viewer.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                viewer.setVisible(true);
+            // Verify row selection
+            if (tabelKaryawan.getSelectedRow() == -1) {
+                JOptionPane.showMessageDialog(null, "Please select an employee first!", "Warning", JOptionPane.WARNING_MESSAGE);
+                return;
             }
 
-            conn.close();
+            // Prepare report parameters
+            Map<String, Object> parameters = new HashMap<>();
+            String selectedKdKaryawan = tabelKaryawan.getValueAt(tabelKaryawan.getSelectedRow(), 1).toString().trim();
+            parameters.put("kd_karyawan", selectedKdKaryawan);
+
+            // Get connection from centralized config
+            conn = DatabaseConnection.getConnection();
+
+            // Load report from classpath 
+            InputStream reportStream = getClass().getClassLoader().getResourceAsStream("reports/SuratKontrak.jrxml");
+            if (reportStream == null) {
+                throw new RuntimeException("Report template not found!");
+            }
+
+            // Compile and fill report
+            JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, conn);
+
+            // Display report
+            if (jasperPrint.getPages().isEmpty()) {
+                JOptionPane.showMessageDialog(null, 
+                    "No data found for employee: " + selectedKdKaryawan, 
+                    "Empty Report", 
+                    JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JasperViewer viewer = new JasperViewer(jasperPrint, false);
+                viewer.setTitle("Employee Contract - " + selectedKdKaryawan);
+                viewer.setVisible(true);
+            }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, 
+                "Error generating report: " + e.getMessage(), 
+                "Error", 
+                JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
+        } finally {
+            // Ensure connection is closed
+            if (conn != null) {
+                try { conn.close(); } catch (SQLException e) { /* Ignore */ }
+            }
         }
     }//GEN-LAST:event_btnKontrakActionPerformed
 

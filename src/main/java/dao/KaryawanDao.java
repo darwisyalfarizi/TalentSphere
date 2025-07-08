@@ -186,7 +186,7 @@ public class KaryawanDao {
     }
    
     public static List<Karyawan> getAllKaryawanForComboBox() {
-        String sql = "SELECT kd_karyawan, nama, jabatan_id FROM karyawan";
+        String sql = "SELECT kd_karyawan, nama, jabatan_id FROM karyawan WHERE status ='Aktif'";
         List<Karyawan> karyawans = new ArrayList<>();
 
         try (Connection conn = DatabaseConnection.getConnection();

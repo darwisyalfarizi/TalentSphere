@@ -18,6 +18,7 @@ public class DashboardDao {
             FROM karyawan k
             LEFT JOIN jabatan j ON k.jabatan_id = j.id_jabatan
             LEFT JOIN departemen d ON k.departemen_id = d.id_departemen
+            WHERE k.status = 'Aktif'
             ORDER BY k.nama
             """;
         

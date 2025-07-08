@@ -8,15 +8,16 @@ import java.util.List;
 
 public class DetailGajiDao {
     
-    public List<DetailGaji> getAllDetailGaji() {
+    public List<DetailGaji> getDetailGajiByKdSlip(String kdSlip) {
         List<DetailGaji> details = new ArrayList<>();
-        String sql = "SELECT * FROM detail_gaji";
-        
+        String sql = "SELECT * FROM detail_gaji WHERE kd_slip = ?";
+
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+
+            stmt.setString(1, kdSlip);  
             ResultSet rs = stmt.executeQuery();
-            
+
             while (rs.next()) {
                 DetailGaji detail = new DetailGaji();
                 detail.setkdDetail(rs.getString("kd_detail"));
@@ -52,32 +53,6 @@ public class DetailGajiDao {
         }
     }
 
-    public List<DetailGaji> searchDetailGajiBySlip(String kdSlip) {
-    List<DetailGaji> details = new ArrayList<>();
-    String sql = "SELECT * FROM detail_gaji WHERE kd_slip LIKE ?";
-    
-    try (Connection conn = DatabaseConnection.getConnection();
-         PreparedStatement stmt = conn.prepareStatement(sql)) {
-        
-        stmt.setString(1, "%" + kdSlip + "%");
-        
-        ResultSet rs = stmt.executeQuery();
-        
-        while (rs.next()) {
-            DetailGaji detail = new DetailGaji();
-            detail.setkdDetail(rs.getString("kd_detail"));
-            detail.setKdSlip(rs.getString("kd_slip"));
-            detail.setJenis(rs.getString("jenis"));
-            detail.setDeskripsi(rs.getString("deskripsi"));
-            detail.setIsTambah(rs.getBoolean("is_tambah"));
-            detail.setJumlah(rs.getBigDecimal("jumlah"));
-            details.add(detail);
-        }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-    return details;
-}
     
     public boolean updateDetailGaji(DetailGaji detailGaji) {
     String sql = "UPDATE detail_gaji SET kd_slip=?, jenis=?, deskripsi=?, is_tambah=?, jumlah=? WHERE kd_detail=?";
@@ -115,6 +90,22 @@ public class DetailGajiDao {
             e.printStackTrace();
             return false;
         }
+    }
+    
+    public static String getLastKodeDetailGaji() {
+        String sql = "SELECT kd_detail FROM detail_gaji ORDER BY kd_detail DESC LIMIT 1";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            if (rs.next()) {
+                return rs.getString("kd_detail");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

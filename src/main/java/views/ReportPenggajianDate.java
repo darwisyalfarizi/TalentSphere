@@ -4,8 +4,11 @@
  */
 package views;
 
+import config.DatabaseConnection;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -118,43 +121,88 @@ public class ReportPenggajianDate extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void printReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printReportActionPerformed
-       try {
-        // 1. Prepare parameters
-            Map<String, Object> parameter = new HashMap<String, Object>();
-            LocalDate localDate = dateAwal.getDate();
-            parameter.put("awal", java.sql.Date.valueOf(localDate)); 
+       Connection conn = null;
 
-            LocalDate localDate1 = dateAkhir.getDate();
-            parameter.put("akhir", java.sql.Date.valueOf(localDate1));
+        try {
+            // 1. Validate date selection
+            if (dateAwal.getDate() == null || dateAkhir.getDate() == null) {
+                JOptionPane.showMessageDialog(null, 
+                    "Please select both start and end dates", 
+                    "Date Selection Required", 
+                    JOptionPane.WARNING_MESSAGE);
+                return;
+            }
 
-            // 2. Database connection (ensure this matches your query's database)
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/talent_sphere2", // Changed to match your query
-                "root", 
-                ""
-            );
+            // 2. Prepare report parameters
+            Map<String, Object> parameters = new HashMap<>();
+            LocalDate startDate = dateAwal.getDate();
+            LocalDate endDate = dateAkhir.getDate();
 
-            // 3. Compile and fill report (WITH parameters)
-            String reportPath = "C:\\Users\\darwi\\Documents\\NetBeansProjects\\TalentSphere\\report\\PengajuanCuti.jrxml";
-            JasperReport jr = JasperCompileManager.compileReport(reportPath);
-            JasperPrint jp = JasperFillManager.fillReport(jr, parameter, conn); // Fixed: passing parameters
+            // Validate date range
+            if (startDate.isAfter(endDate)) {
+                JOptionPane.showMessageDialog(null,
+                    "Start date cannot be after end date",
+                    "Invalid Date Range",
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
-            // 4. Verify the report has pages before viewing
-            if (jp.getPages().isEmpty()) {
-                JOptionPane.showMessageDialog(null, "No data found for the selected date range");
+            parameters.put("awal", java.sql.Date.valueOf(startDate));
+            parameters.put("akhir", java.sql.Date.valueOf(endDate));
+
+            // 3. Get database connection
+            conn = DatabaseConnection.getConnection();
+
+            // 4. Load and compile report from resources
+            InputStream reportStream = getClass().getClassLoader()
+                .getResourceAsStream("reports/Penggajian.jrxml");
+
+            if (reportStream == null) {
+                JOptionPane.showMessageDialog(null,
+                    "Salary report template (Penggajian.jrxml) not found",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
+
+            // 5. Fill and display report
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, conn);
+
+            if (jasperPrint.getPages().isEmpty()) {
+                JOptionPane.showMessageDialog(null,
+                    "No salary data found between " + startDate + " and " + endDate,
+                    "Empty Report",
+                    JOptionPane.INFORMATION_MESSAGE);
             } else {
-                // Show viewer
-                JasperViewer viewer = new JasperViewer(jp, false);
+                JasperViewer viewer = new JasperViewer(jasperPrint, false);
+                viewer.setTitle("Salary Report: " + startDate + " to " + endDate);
                 viewer.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 viewer.setVisible(true);
             }
-
-            conn.close();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null,
+                "Database error: " + e.getMessage(),
+                "Database Error",
+                JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
-    }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null,
+                "Failed to generate salary report: " + e.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        } finally {
+            // 6. Clean up resources
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    System.err.println("Error closing connection: " + e.getMessage());
+                }
+            }
+        }
     }//GEN-LAST:event_printReportActionPerformed
 
 

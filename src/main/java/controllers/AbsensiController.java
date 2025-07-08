@@ -17,7 +17,7 @@ public class AbsensiController {
 
     public static List<Absensi> getAllAbsensi(){
         return AbsensiDao.getAllAbsensi();
-    }
+    }   
     public List<Absensi> searchAbsensis(String keyword) {
         return absensiDao.searchAbsensis(keyword);
     }

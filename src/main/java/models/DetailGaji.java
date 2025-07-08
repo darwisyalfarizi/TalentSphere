@@ -7,8 +7,8 @@ public class DetailGaji {
     private String kdSlip;
     private String jenis;
     private String deskripsi;
-    private boolean isTambah; // true untuk tambahan, false untuk pengurangan
-    private BigDecimal jumlah;  // Changed from double to BigDecimal
+    private boolean isTambah;  
+    private BigDecimal jumlah;
     
     
 

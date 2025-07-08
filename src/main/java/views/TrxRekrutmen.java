@@ -5,12 +5,15 @@
 package views;
 
 
+
 import controllers.RekrutmenController;
 import java.util.List;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import models.Rekrutmen;
+
+
 
 /**
  *
@@ -26,6 +29,7 @@ public class TrxRekrutmen extends javax.swing.JPanel {
         setTableRekrutmen();
         loadRekrutmen();
         loadComboStatus();
+
         
     }
     
@@ -41,9 +45,9 @@ public class TrxRekrutmen extends javax.swing.JPanel {
         jProgressBar1 = new javax.swing.JProgressBar();
         panelMain = new javax.swing.JPanel();
         panelView = new javax.swing.JPanel();
-        jLabel10 = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
         tabelRekrutmen = new javax.swing.JTable();
         txtSearch = new javax.swing.JTextField();
         btnTambah = new javax.swing.JButton();
@@ -54,20 +58,19 @@ public class TrxRekrutmen extends javax.swing.JPanel {
         jLabel4 = new javax.swing.JLabel();
         btnSimpan = new javax.swing.JButton();
         btnTambahBatal = new javax.swing.JButton();
-        jPanel1 = new javax.swing.JPanel();
-        jLabel5 = new javax.swing.JLabel();
-        tambahNama = new javax.swing.JTextField();
-        tambahKD = new javax.swing.JTextField();
-        jLabel6 = new javax.swing.JLabel();
-        tambahEmail = new javax.swing.JTextField();
-        jLabel7 = new javax.swing.JLabel();
-        tambahTelepon = new javax.swing.JTextField();
-        jLabel8 = new javax.swing.JLabel();
-        tambahPosisi = new javax.swing.JTextField();
-        jLabel9 = new javax.swing.JLabel();
-        tambahStatus = new javax.swing.JComboBox<>();
-        jLabel12 = new javax.swing.JLabel();
         btnTambahReset = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
+        status = new javax.swing.JLabel();
+        tambahStatus = new javax.swing.JComboBox<>();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        tambahKD = new javax.swing.JTextField();
+        tambahNama = new javax.swing.JTextField();
+        tambahEmail = new javax.swing.JTextField();
+        tambahNotelp = new javax.swing.JTextField();
+        tambahPosisi = new javax.swing.JTextField();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new java.awt.CardLayout());
@@ -76,13 +79,12 @@ public class TrxRekrutmen extends javax.swing.JPanel {
 
         panelView.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel10.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
-        jLabel10.setText("Transaksi> Rekrutmen");
+        jLabel1.setText("Transaksi> Rekrutmen");
+        jLabel1.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
 
-        jLabel11.setFont(new java.awt.Font("Poppins", 1, 18)); // NOI18N
-        jLabel11.setText("Data Rekrutmen");
+        jLabel2.setText("Data Rekrutmen");
+        jLabel2.setFont(new java.awt.Font("Poppins", 1, 18)); // NOI18N
 
-        tabelRekrutmen.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
         tabelRekrutmen.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -94,13 +96,14 @@ public class TrxRekrutmen extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tabelRekrutmen.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
         tabelRekrutmen.setGridColor(new java.awt.Color(204, 204, 204));
         tabelRekrutmen.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tabelRekrutmenMouseClicked(evt);
             }
         });
-        jScrollPane2.setViewportView(tabelRekrutmen);
+        jScrollPane1.setViewportView(tabelRekrutmen);
 
         txtSearch.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
         txtSearch.setText("Search...");
@@ -110,22 +113,22 @@ public class TrxRekrutmen extends javax.swing.JPanel {
             }
         });
 
+        btnTambah.setText("Tambah");
         btnTambah.setBackground(new java.awt.Color(81, 108, 248));
+        btnTambah.setBorder(null);
         btnTambah.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
         btnTambah.setForeground(new java.awt.Color(255, 255, 255));
-        btnTambah.setText("Tambah");
-        btnTambah.setBorder(null);
         btnTambah.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnTambahActionPerformed(evt);
             }
         });
 
+        btnBatal.setText("Batal");
         btnBatal.setBackground(new java.awt.Color(248, 173, 80));
+        btnBatal.setBorder(null);
         btnBatal.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
         btnBatal.setForeground(new java.awt.Color(255, 255, 255));
-        btnBatal.setText("Batal");
-        btnBatal.setBorder(null);
         btnBatal.setPreferredSize(new java.awt.Dimension(62, 22));
         btnBatal.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -133,11 +136,11 @@ public class TrxRekrutmen extends javax.swing.JPanel {
             }
         });
 
+        btnDelete.setText("Hapus");
         btnDelete.setBackground(new java.awt.Color(248, 80, 108));
+        btnDelete.setBorder(null);
         btnDelete.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
         btnDelete.setForeground(new java.awt.Color(255, 255, 255));
-        btnDelete.setText("Hapus");
-        btnDelete.setBorder(null);
         btnDelete.setPreferredSize(new java.awt.Dimension(62, 22));
         btnDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -150,25 +153,25 @@ public class TrxRekrutmen extends javax.swing.JPanel {
         panelViewLayout.setHorizontalGroup(
             panelViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelViewLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
                 .addGroup(panelViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(panelViewLayout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelViewLayout.createSequentialGroup()
-                        .addGap(20, 20, 20)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel1))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelViewLayout.createSequentialGroup()
+                        .addComponent(btnTambah, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(15, 15, 15)
+                        .addComponent(btnBatal, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(panelViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 833, Short.MAX_VALUE)
                             .addGroup(panelViewLayout.createSequentialGroup()
-                                .addComponent(jLabel11)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel10))
-                            .addGroup(panelViewLayout.createSequentialGroup()
-                                .addComponent(btnTambah, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(15, 15, 15)
-                                .addComponent(btnBatal, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(15, 15, 15)
                                 .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE)))))
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelViewLayout.createSequentialGroup()
+                                .addGap(430, 430, 430)
+                                .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addGap(20, 20, 20))
         );
         panelViewLayout.setVerticalGroup(
@@ -176,17 +179,17 @@ public class TrxRekrutmen extends javax.swing.JPanel {
             .addGroup(panelViewLayout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addGroup(panelViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel10)
-                    .addComponent(jLabel11))
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(panelViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnTambah, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnBatal, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 104, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
                 .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(27, 27, 27)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 474, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 474, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20))
         );
 
@@ -194,17 +197,17 @@ public class TrxRekrutmen extends javax.swing.JPanel {
 
         panelAdd.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel3.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
         jLabel3.setText("Transaksi > Rekrutmen");
+        jLabel3.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
 
-        jLabel4.setFont(new java.awt.Font("Poppins", 1, 18)); // NOI18N
         jLabel4.setText("Tambah Data Rekrutmen");
+        jLabel4.setFont(new java.awt.Font("Poppins", 1, 18)); // NOI18N
 
+        btnSimpan.setText("Simpan");
         btnSimpan.setBackground(new java.awt.Color(81, 108, 248));
+        btnSimpan.setBorder(null);
         btnSimpan.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
         btnSimpan.setForeground(new java.awt.Color(255, 255, 255));
-        btnSimpan.setText("Simpan");
-        btnSimpan.setBorder(null);
         btnSimpan.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSimpanActionPerformed(evt);
@@ -225,93 +228,6 @@ public class TrxRekrutmen extends javax.swing.JPanel {
             }
         });
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-
-        jLabel5.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
-        jLabel5.setText("Kode Rekrutmen");
-
-        tambahNama.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
-
-        tambahKD.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
-
-        jLabel6.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
-        jLabel6.setText("Email");
-
-        tambahEmail.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
-
-        jLabel7.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
-        jLabel7.setText("No Telepon");
-
-        tambahTelepon.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
-
-        jLabel8.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
-        jLabel8.setText("Posisi ");
-
-        tambahPosisi.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
-
-        jLabel9.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
-        jLabel9.setText("Status");
-
-        tambahStatus.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
-        tambahStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        jLabel12.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
-        jLabel12.setText("Nama Pelamar");
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tambahNama)
-                    .addComponent(tambahEmail)
-                    .addComponent(tambahTelepon)
-                    .addComponent(tambahPosisi)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(tambahStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 408, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(tambahKD))
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(18, Short.MAX_VALUE)
-                .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tambahKD, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel12)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tambahNama, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tambahEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel7)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tambahTelepon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel8)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tambahPosisi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel9)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tambahStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(245, 245, 245))
-        );
-
         btnTambahReset.setBackground(new java.awt.Color(51, 51, 51));
         btnTambahReset.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
         btnTambahReset.setForeground(new java.awt.Color(255, 255, 255));
@@ -326,26 +242,77 @@ public class TrxRekrutmen extends javax.swing.JPanel {
             }
         });
 
+        jLabel5.setText("Kode Rekrutmen");
+        jLabel5.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
+
+        status.setText("Status");
+        status.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
+
+        tambahStatus.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
+
+        jLabel7.setText("Email");
+        jLabel7.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
+
+        jLabel6.setText("Posisi");
+        jLabel6.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
+
+        jLabel8.setText("No. Telepon");
+        jLabel8.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
+
+        jLabel9.setText("Nama Pelamar");
+        jLabel9.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
+
+        tambahKD.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
+
+        tambahNama.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
+
+        tambahEmail.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
+
+        tambahNotelp.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
+
+        tambahPosisi.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
+
         javax.swing.GroupLayout panelAddLayout = new javax.swing.GroupLayout(panelAdd);
         panelAdd.setLayout(panelAddLayout);
         panelAddLayout.setHorizontalGroup(
             panelAddLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelAddLayout.createSequentialGroup()
+            .addGroup(panelAddLayout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addGroup(panelAddLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelAddLayout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 442, Short.MAX_VALUE)
-                        .addComponent(jLabel3))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelAddLayout.createSequentialGroup()
-                        .addComponent(btnSimpan, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(15, 15, 15)
-                        .addComponent(btnTambahReset, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(15, 15, 15)
-                        .addComponent(btnTambahBatal, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addGap(20, 20, 20))
+                .addGroup(panelAddLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelAddLayout.createSequentialGroup()
+                        .addComponent(status, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelAddLayout.createSequentialGroup()
+                        .addGroup(panelAddLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelAddLayout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 442, Short.MAX_VALUE)
+                                .addComponent(jLabel3))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelAddLayout.createSequentialGroup()
+                                .addComponent(btnSimpan, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(15, 15, 15)
+                                .addComponent(btnTambahReset, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(15, 15, 15)
+                                .addComponent(btnTambahBatal, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(20, 20, 20))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelAddLayout.createSequentialGroup()
+                        .addGroup(panelAddLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(tambahStatus, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(tambahPosisi, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(tambahKD, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(tambahNama, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelAddLayout.createSequentialGroup()
+                                .addGroup(panelAddLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel7)
+                                    .addComponent(jLabel6)
+                                    .addComponent(jLabel8)
+                                    .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(tambahEmail)
+                            .addComponent(tambahNotelp))
+                        .addGap(412, 412, 412))))
         );
         panelAddLayout.setVerticalGroup(
             panelAddLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -360,8 +327,30 @@ public class TrxRekrutmen extends javax.swing.JPanel {
                     .addComponent(btnTambahBatal, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnTambahReset, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(tambahKD, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel9)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(tambahNama, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(24, 24, 24)
+                .addComponent(jLabel7)
+                .addGap(5, 5, 5)
+                .addComponent(tambahEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel8)
+                .addGap(5, 5, 5)
+                .addComponent(tambahNotelp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(tambahPosisi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(status)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(tambahStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(125, Short.MAX_VALUE))
         );
 
         panelMain.add(panelAdd, "card9");
@@ -388,6 +377,26 @@ public class TrxRekrutmen extends javax.swing.JPanel {
         
     }//GEN-LAST:event_btnSimpanActionPerformed
 
+    private void btnTambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahActionPerformed
+        panelMain.removeAll();
+        panelMain.add(panelAdd);
+        panelMain.repaint();
+        panelMain.revalidate();
+
+
+        if (btnTambah.getText().equals("Ubah")) {
+            dataTable(); 
+            btnSimpan.setText("Perbarui");
+            tambahKD.setEditable(false);
+        } else {
+            resetForm(); 
+            btnSimpan.setText("Simpan");
+            tambahKD.setText(generateKodeRekrutmen());
+            tambahKD.setEditable(false);
+        }
+
+    }//GEN-LAST:event_btnTambahActionPerformed
+
     private void btnTambahBatalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahBatalActionPerformed
         showPanelView();
         loadRekrutmen();
@@ -396,6 +405,10 @@ public class TrxRekrutmen extends javax.swing.JPanel {
             btnTambah.setText("Tambah");
         }
     }//GEN-LAST:event_btnTambahBatalActionPerformed
+
+    private void txtSearchKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyTyped
+        searchData();
+    }//GEN-LAST:event_txtSearchKeyTyped
 
     private void btnTambahResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahResetActionPerformed
         resetForm();
@@ -407,37 +420,14 @@ public class TrxRekrutmen extends javax.swing.JPanel {
         }
         btnBatal.setVisible(true);
         btnDelete.setVisible(true);
-    }//GEN-LAST:event_tabelRekrutmenMouseClicked
-
-    private void txtSearchKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyTyped
-        searchData();
-    }//GEN-LAST:event_txtSearchKeyTyped
-
-    private void btnTambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahActionPerformed
-        panelMain.removeAll();
-        panelMain.add(panelAdd);
-        panelMain.repaint();
-        panelMain.revalidate();
         
-
-        if (btnTambah.getText().equals("Ubah")) {
-            dataTable();
-            btnSimpan.setText("Perbarui");
-            tambahKD.setEditable(false);
-        } else {
-            resetForm();
-            btnSimpan.setText("Simpan");
-            tambahKD.setText(generateKodeRekrutmen());
-            tambahKD.setEditable(false);
-
-        }
-    }//GEN-LAST:event_btnTambahActionPerformed
+    }//GEN-LAST:event_tabelRekrutmenMouseClicked
 
     private void btnBatalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBatalActionPerformed
         showPanelView();
         loadRekrutmen();
         resetForm();
-        if(btnTambah.getText().equals("Ubah")){
+         if(btnTambah.getText().equals("Ubah")){
             btnTambah.setText("Tambah");
         }
     }//GEN-LAST:event_btnBatalActionPerformed
@@ -454,9 +444,8 @@ public class TrxRekrutmen extends javax.swing.JPanel {
     private javax.swing.JButton btnTambah;
     private javax.swing.JButton btnTambahBatal;
     private javax.swing.JButton btnTambahReset;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -464,19 +453,19 @@ public class TrxRekrutmen extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JProgressBar jProgressBar1;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel panelAdd;
     private javax.swing.JPanel panelMain;
     private javax.swing.JPanel panelView;
+    private javax.swing.JLabel status;
     private javax.swing.JTable tabelRekrutmen;
     private javax.swing.JTextField tambahEmail;
     private javax.swing.JTextField tambahKD;
     private javax.swing.JTextField tambahNama;
+    private javax.swing.JTextField tambahNotelp;
     private javax.swing.JTextField tambahPosisi;
     private javax.swing.JComboBox<String> tambahStatus;
-    private javax.swing.JTextField tambahTelepon;
     private javax.swing.JTextField txtSearch;
     // End of variables declaration//GEN-END:variables
 
@@ -486,60 +475,73 @@ public class TrxRekrutmen extends javax.swing.JPanel {
         panelMain.add(panelView);
         btnBatal.setVisible(false);
         btnDelete.setVisible(false);
+        
         panelMain.repaint();
         panelMain.revalidate();
     }
     
     private void loadRekrutmen() {
-           
         btnBatal.setVisible(false);
         btnDelete.setVisible(false);
         RekrutmenController rekrutmenController = new RekrutmenController();
         List<Rekrutmen> rekrutmens = rekrutmenController.getAllRekrutmen();
-        
+
         DefaultTableModel model = (DefaultTableModel)tabelRekrutmen.getModel(); 
         model.setRowCount(0);
-        
+
         if (rekrutmens != null) {
+            int rowNumber = 1;
             for (Rekrutmen rekrutmen : rekrutmens) {
                 model.addRow(new Object[]{
+                    rowNumber++, // Row number
                     rekrutmen.getKdRekrutmen(),
                     rekrutmen.getNamaPelamar(),
                     rekrutmen.getEmail(),
                     rekrutmen.getTelepon(),
                     rekrutmen.getPosisi(),
                     rekrutmen.getStatus(),
-                    
-                    
                 });
             }
         }
-
-        
     }
 
     private void setTableRekrutmen() {
-        DefaultTableModel model = new DefaultTableModel();
+        DefaultTableModel model = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Make all cells non-editable
+            }
+        };
+
+        model.addColumn("No"); // Add row number column
         model.addColumn("Kode Rekrutmen");
         model.addColumn("Nama Pelamar");
         model.addColumn("Email");
         model.addColumn("No. Telepon");
         model.addColumn("Posisi");
         model.addColumn("Status");
+
         tabelRekrutmen.setModel(model);
-        
+
+        // Set column widths
+        tabelRekrutmen.getColumnModel().getColumn(0).setPreferredWidth(40);  // No
+        tabelRekrutmen.getColumnModel().getColumn(1).setPreferredWidth(100); // Kode Rekrutmen
+        tabelRekrutmen.getColumnModel().getColumn(2).setPreferredWidth(150); // Nama Pelamar
+        tabelRekrutmen.getColumnModel().getColumn(3).setPreferredWidth(150); // Email
+        tabelRekrutmen.getColumnModel().getColumn(4).setPreferredWidth(100); // No. Telepon
+        tabelRekrutmen.getColumnModel().getColumn(5).setPreferredWidth(120); // Posisi
+        tabelRekrutmen.getColumnModel().getColumn(6).setPreferredWidth(100); // Status
     }
 
     private void resetForm() {
         tambahNama.setText("");
         
         tambahEmail.setText("");
-        tambahTelepon.setText("");
+        tambahNotelp.setText("");
         tambahPosisi.setText("");
         // Reset combo boxes
         
         tambahStatus.setSelectedIndex(0);
-        
 
         // Reset focus
         tambahNama.requestFocusInWindow();
@@ -553,43 +555,45 @@ public class TrxRekrutmen extends javax.swing.JPanel {
         DefaultTableModel model = (DefaultTableModel) tabelRekrutmen.getModel();
         model.setRowCount(0);
 
-        for (Rekrutmen rekrutmen : rekrutmens) {
-            model.addRow(new Object[]{
-                rekrutmen.getKdRekrutmen(), 
-                rekrutmen.getNamaPelamar(),
-                rekrutmen.getEmail(),
-                rekrutmen.getTelepon(),
-                rekrutmen.getPosisi(),
-                rekrutmen.getStatus(),
-            });
+        if (rekrutmens != null) {
+            int rowNumber = 1;
+            for (Rekrutmen rekrutmen : rekrutmens) {
+                model.addRow(new Object[]{
+                    rowNumber++, // Row number
+                    rekrutmen.getKdRekrutmen(), 
+                    rekrutmen.getNamaPelamar(),
+                    rekrutmen.getEmail(),
+                    rekrutmen.getTelepon(),
+                    rekrutmen.getPosisi(),
+                    rekrutmen.getStatus(),
+                });
+            }
         }
     }
+
 
     private void dataTable(){
         panelView.setVisible(false);
         panelAdd.setVisible(true);
-        
+
         int row = tabelRekrutmen.getSelectedRow();
         jLabel4.setText("Ubah Data Rekrutmen");
-        
-        tambahNama.setText(tabelRekrutmen.getValueAt(row, 1).toString());
-        tambahEmail.setText(tabelRekrutmen.getValueAt(row, 2).toString());
-        tambahTelepon.setText(tabelRekrutmen.getValueAt(row, 3).toString());
-        tambahPosisi.setText(tabelRekrutmen.getValueAt(row, 4).toString());
-        
-        setComboFromTable(tambahStatus, tabelRekrutmen.getValueAt(row, 5).toString());
-        
-        String id = tabelRekrutmen.getValueAt(row, 0).toString(); 
-        tambahKD.setText(id);
-        
-        
+
+        // Skip the first column (row number)
+        tambahKD.setText(tabelRekrutmen.getValueAt(row, 1).toString());
+        tambahNama.setText(tabelRekrutmen.getValueAt(row, 2).toString());
+        tambahEmail.setText(tabelRekrutmen.getValueAt(row, 3).toString());
+        tambahNotelp.setText(tabelRekrutmen.getValueAt(row, 4).toString());
+        tambahPosisi.setText(tabelRekrutmen.getValueAt(row, 5).toString());
+
+        setComboFromTable(tambahStatus, tabelRekrutmen.getValueAt(row, 6).toString());
     }
     
     private void insertData() {
         String kd = tambahKD.getText();
         String nama = tambahNama.getText();
         String email = tambahEmail.getText();
-        String teleponStr = tambahTelepon.getText();
+        String teleponStr = tambahNotelp.getText();
         String posisi = tambahPosisi.getText();
         
         String status = (String) tambahStatus.getSelectedItem();
@@ -637,7 +641,7 @@ public class TrxRekrutmen extends javax.swing.JPanel {
         String kdStr = tambahKD.getText();
         String nama = tambahNama.getText();
         String email = tambahEmail.getText();
-        String teleponStr = tambahTelepon.getText();
+        String teleponStr = tambahNotelp.getText();
         String posisi = tambahPosisi.getText();
         
         String status = (String) tambahStatus.getSelectedItem();
@@ -682,13 +686,17 @@ public class TrxRekrutmen extends javax.swing.JPanel {
 
     private void deleteData() {
         int selectedRow = tabelRekrutmen.getSelectedRow();
+        if (selectedRow < 0) {
+            JOptionPane.showMessageDialog(this, "Pilih data yang akan dihapus!");
+            return;
+        }
+
         int confirm = JOptionPane.showConfirmDialog(this, "Apakah anda ingin menghapus data ini ?",
                 "Konfirmasi Hapus Data", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
             try {
-                
-                String kdStr = tabelRekrutmen.getValueAt(selectedRow, 0).toString();
-                
+                // Get the kdRekrutmen from column 1 (column 0 is the row number)
+                String kdStr = tabelRekrutmen.getValueAt(selectedRow, 1).toString();
 
                 RekrutmenController rekrutmenController = new RekrutmenController();
                 boolean success = rekrutmenController.deleteRekrutmen(kdStr);
@@ -699,7 +707,6 @@ public class TrxRekrutmen extends javax.swing.JPanel {
                     resetForm(); 
                     showPanelView();
                     btnTambah.setText("Tambah");
-
                 } else {
                     JOptionPane.showMessageDialog(this, "Gagal menghapus data.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -753,5 +760,6 @@ private void loadComboStatus() {
         }
 
     }
+    
 
 }

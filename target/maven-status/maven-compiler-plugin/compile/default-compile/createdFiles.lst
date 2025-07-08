@@ -1,3 +1,4 @@
+views\ReportCuti$4.class
 views\DataUser$9.class
 views\TrxPenggajian$23.class
 models\Departemen.class
@@ -46,6 +47,8 @@ controllers\DepartemenController.class
 views\DataJabatan$2.class
 views\TrxRekrutmen$6.class
 models\DetailGaji.class
+views\ReportPenggajian$4.class
+views\TrxCuti$10.class
 views\DataDepartemen$4.class
 views\DataUser$2.class
 views\TrxAbsensi$6.class
@@ -55,6 +58,7 @@ controllers\KaryawanController.class
 views\DataJabatan$1.class
 views\DataUser.class
 views\Dashboard$3.class
+views\ReportAbsensi$4.class
 views\FormLogin$1.class
 views\DataUser$12.class
 config\DatabaseConnection.class
@@ -83,10 +87,10 @@ views\ReportPenggajianDate$1.class
 dao\DashboardDao.class
 views\ReportCuti$2.class
 views\DataDepartemen$1.class
+views\TrxAbsensi$9.class
 views\DataKaryawan$8.class
 views\TrxPenggajian$4.class
 dao\AbsensiDao.class
-utils\FormatUtil.class
 views\DataKaryawan$4.class
 views\TrxAbsensi.class
 views\Dashboard$4.class
@@ -98,8 +102,6 @@ views\TrxPenggajian$20.class
 views\TrxAbsensi$2.class
 views\TrxAbsensi$7.class
 views\TrxCuti$5.class
-utils\ComboItem.class
-views\TrxPenggajian$26.class
 views\DataUser$1.class
 views\DataDepartemen$3.class
 views\TrxRekrutmen$4.class
@@ -115,7 +117,6 @@ views\DataKaryawan$5.class
 views\FormLogin$3.class
 views\TrxPenggajian$3.class
 views\Dashboard$5.class
-views\TrxPenggajian$27.class
 controllers\SlipGajiController.class
 views\TrxPenggajian$21.class
 views\Dashboard$10.class
@@ -165,6 +166,7 @@ views\DataJabatan$6.class
 views\PanelDashboard.class
 views\TrxPenggajian.class
 views\Dashboard$13.class
+views\TrxRekrutmen$9.class
 views\DataJabatan$5.class
 views\Dashboard$8.class
 views\DataKaryawan$10.class

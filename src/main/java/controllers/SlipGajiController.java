@@ -7,7 +7,7 @@ package controllers;
 import dao.SlipGajiDAO;
 import java.util.List;
 import models.SlipGaji;
-import utils.ComboItem;
+
 
 /**
  *
@@ -32,8 +32,8 @@ public class SlipGajiController {
         return slipGajiDAO.deleteSlipGaji(kdSlip);
     }
 
-//    public String generateNewKdSlip() {
-//        return slipGajiDAO.generateKdSlip();
-//    }
+    public String getLastKodeSlipGaji() {
+        return slipGajiDAO.getLastKodeSlipGaji();
+    }
    
 }

@@ -7,11 +7,12 @@ package views;
 
 
 
+import config.DatabaseConnection;
 import controllers.JabatanController;
 import controllers.KaryawanController;
 import controllers.SlipGajiController;
 import controllers.DetailGajiController;
-import java.awt.Component;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -20,9 +21,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import models.DetailGaji;
@@ -31,6 +30,7 @@ import models.Karyawan;
 import models.SlipGaji;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import javax.swing.JFrame;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -52,9 +52,8 @@ public class TrxPenggajian extends javax.swing.JPanel {
         setTableGaji();
         setTableDetailGaji();
         loadGaji();
-        loadDetailGaji();
+        
         loadComboKaryawan();
-        loadComboSlip();
         
     }
     
@@ -79,6 +78,7 @@ public class TrxPenggajian extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         tableSlip = new javax.swing.JTable();
         btnSlip = new javax.swing.JButton();
+        btnTambahDetail = new javax.swing.JButton();
         panelAdd = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -92,8 +92,6 @@ public class TrxPenggajian extends javax.swing.JPanel {
         tambahGajiPokok = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
         tambahPeriode = new com.github.lgooddatepicker.components.DatePicker();
-        btnTambahGaji = new javax.swing.JButton();
-        jLabel6 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
         btnTambahReset = new javax.swing.JButton();
         panelAddMin = new javax.swing.JPanel();
@@ -103,7 +101,6 @@ public class TrxPenggajian extends javax.swing.JPanel {
         jPanel2 = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
         tambahKdDetail = new javax.swing.JTextField();
-        tambahKaryawanP = new javax.swing.JComboBox<>();
         jLabel12 = new javax.swing.JLabel();
         tambahDeskripsi = new javax.swing.JTextField();
         jLabel13 = new javax.swing.JLabel();
@@ -115,12 +112,11 @@ public class TrxPenggajian extends javax.swing.JPanel {
         istambah1 = new javax.swing.JRadioButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         tableDetailGaji = new javax.swing.JTable();
-        searchKodeSlip = new javax.swing.JTextField();
-        btnBatalDetail = new javax.swing.JButton();
         btnDeleteDetail = new javax.swing.JButton();
         jLabel17 = new javax.swing.JLabel();
         btnSimpan2 = new javax.swing.JButton();
         btnSimpan1 = new javax.swing.JButton();
+        kdSlip = new javax.swing.JTextField();
         btnTambahReset1 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
@@ -133,7 +129,7 @@ public class TrxPenggajian extends javax.swing.JPanel {
         jLabel1.setText("Transaksi > Penggajian");
         jLabel1.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
 
-        jLabel2.setText("Penggajian");
+        jLabel2.setText("Data Penggajian");
         jLabel2.setFont(new java.awt.Font("Poppins", 1, 18)); // NOI18N
 
         txtSearch.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
@@ -198,7 +194,7 @@ public class TrxPenggajian extends javax.swing.JPanel {
         });
         jScrollPane1.setViewportView(tableSlip);
 
-        btnSlip.setText("Slip Gaji");
+        btnSlip.setText("Cetak Slip Gaji");
         btnSlip.setBackground(new java.awt.Color(0, 0, 0));
         btnSlip.setBorder(null);
         btnSlip.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
@@ -209,6 +205,17 @@ public class TrxPenggajian extends javax.swing.JPanel {
             }
         });
 
+        btnTambahDetail.setText("Tambah Detail Gaji");
+        btnTambahDetail.setBackground(new java.awt.Color(0, 0, 0));
+        btnTambahDetail.setBorder(null);
+        btnTambahDetail.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
+        btnTambahDetail.setForeground(new java.awt.Color(255, 255, 255));
+        btnTambahDetail.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTambahDetailActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelViewLayout = new javax.swing.GroupLayout(panelView);
         panelView.setLayout(panelViewLayout);
         panelViewLayout.setHorizontalGroup(
@@ -216,7 +223,7 @@ public class TrxPenggajian extends javax.swing.JPanel {
             .addGroup(panelViewLayout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addGroup(panelViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 833, Short.MAX_VALUE)
                     .addGroup(panelViewLayout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -226,16 +233,15 @@ public class TrxPenggajian extends javax.swing.JPanel {
                             .addGroup(panelViewLayout.createSequentialGroup()
                                 .addComponent(btnTambah, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(15, 15, 15)
-                                .addComponent(btnBatal, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(btnSlip, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGroup(panelViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(panelViewLayout.createSequentialGroup()
+                                .addComponent(btnBatal, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(15, 15, 15)
-                                .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
+                                .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelViewLayout.createSequentialGroup()
-                                .addGap(430, 430, 430)
-                                .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(btnTambahDetail, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnSlip, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(20, 20, 20))
         );
         panelViewLayout.setVerticalGroup(
@@ -250,11 +256,17 @@ public class TrxPenggajian extends javax.swing.JPanel {
                     .addComponent(btnTambah, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnBatal, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
-                .addGroup(panelViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnSlip, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addGroup(panelViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelViewLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                        .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18))
+                    .addGroup(panelViewLayout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addGroup(panelViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnTambahDetail, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnSlip, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 503, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20))
         );
@@ -321,24 +333,6 @@ public class TrxPenggajian extends javax.swing.JPanel {
         jLabel9.setText("Periode");
         jLabel9.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
 
-        btnTambahGaji.setText("Tambah Detail Gaji");
-        btnTambahGaji.setBackground(new java.awt.Color(81, 108, 248));
-        btnTambahGaji.setBorder(null);
-        btnTambahGaji.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
-        btnTambahGaji.setForeground(new java.awt.Color(255, 255, 255));
-        btnTambahGaji.setMaximumSize(new java.awt.Dimension(90, 28));
-        btnTambahGaji.setMinimumSize(new java.awt.Dimension(90, 28));
-        btnTambahGaji.setPreferredSize(new java.awt.Dimension(90, 28));
-        btnTambahGaji.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnTambahGajiActionPerformed(evt);
-            }
-        });
-
-        jLabel6.setText("*Klik Simpan dahulu untuk membuat slip gaji");
-        jLabel6.setFont(new java.awt.Font("Poppins", 0, 10)); // NOI18N
-        jLabel6.setForeground(new java.awt.Color(102, 102, 102));
-
         jLabel16.setText("Kode ");
         jLabel16.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
 
@@ -355,11 +349,9 @@ public class TrxPenggajian extends javax.swing.JPanel {
                         .addComponent(tambahGajiPokok)
                         .addComponent(jLabel9)
                         .addComponent(tambahPeriode, javax.swing.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE)
-                        .addComponent(jLabel6)
-                        .addComponent(btnTambahGaji, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(tambahKD))
                     .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(407, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -380,11 +372,7 @@ public class TrxPenggajian extends javax.swing.JPanel {
                 .addComponent(jLabel7)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(tambahGajiPokok, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel6)
-                .addGap(30, 30, 30)
-                .addComponent(btnTambahGaji, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(196, Short.MAX_VALUE))
+                .addContainerGap(286, Short.MAX_VALUE))
         );
 
         btnTambahReset.setBackground(new java.awt.Color(51, 51, 51));
@@ -446,10 +434,10 @@ public class TrxPenggajian extends javax.swing.JPanel {
         jLabel8.setText("Transaksi > Penggajian");
         jLabel8.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
 
-        jLabel10.setText("Penggajian");
+        jLabel10.setText("Detail Gaji");
         jLabel10.setFont(new java.awt.Font("Poppins", 1, 18)); // NOI18N
 
-        btnTambahBatal1.setText("Batal");
+        btnTambahBatal1.setText("Kembali");
         btnTambahBatal1.setBackground(new java.awt.Color(248, 173, 80));
         btnTambahBatal1.setBorder(null);
         btnTambahBatal1.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
@@ -465,20 +453,13 @@ public class TrxPenggajian extends javax.swing.JPanel {
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel11.setText("Kode - Periode");
+        jLabel11.setText("Kode Slip");
         jLabel11.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
 
         tambahKdDetail.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
         tambahKdDetail.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tambahKdDetailActionPerformed(evt);
-            }
-        });
-
-        tambahKaryawanP.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
-        tambahKaryawanP.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tambahKaryawanPActionPerformed(evt);
             }
         });
 
@@ -545,26 +526,6 @@ public class TrxPenggajian extends javax.swing.JPanel {
         });
         jScrollPane2.setViewportView(tableDetailGaji);
 
-        searchKodeSlip.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
-        searchKodeSlip.setText("Search by kode slip");
-        searchKodeSlip.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                searchKodeSlipKeyTyped(evt);
-            }
-        });
-
-        btnBatalDetail.setText("Batal");
-        btnBatalDetail.setBackground(new java.awt.Color(248, 173, 80));
-        btnBatalDetail.setBorder(null);
-        btnBatalDetail.setFont(new java.awt.Font("Poppins", 1, 14)); // NOI18N
-        btnBatalDetail.setForeground(new java.awt.Color(255, 255, 255));
-        btnBatalDetail.setPreferredSize(new java.awt.Dimension(62, 22));
-        btnBatalDetail.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBatalDetailActionPerformed(evt);
-            }
-        });
-
         btnDeleteDetail.setText("Hapus");
         btnDeleteDetail.setBackground(new java.awt.Color(248, 80, 108));
         btnDeleteDetail.setBorder(null);
@@ -602,6 +563,8 @@ public class TrxPenggajian extends javax.swing.JPanel {
             }
         });
 
+        kdSlip.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -609,34 +572,31 @@ public class TrxPenggajian extends javax.swing.JPanel {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel15)
-                                .addComponent(jLabel13)
-                                .addComponent(tambahDeskripsi)
-                                .addComponent(tambahJenis)
-                                .addComponent(tambahKaryawanP, 0, 372, Short.MAX_VALUE)
-                                .addComponent(tambahKdDetail))
-                            .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel15)
+                            .addComponent(tambahDeskripsi, javax.swing.GroupLayout.DEFAULT_SIZE, 372, Short.MAX_VALUE)
+                            .addComponent(tambahKdDetail)
+                            .addComponent(jLabel13)
+                            .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(kdSlip)
+                            .addComponent(tambahJenis))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(searchKodeSlip, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                                 .addComponent(btnSimpan1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(btnSimpan2, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnBatalDetail, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(12, 12, 12)
                                 .addComponent(btnDeleteDetail, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel12)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(istambah1)
-                                .addGap(52, 52, 52)
-                                .addComponent(isTambah0))
-                            .addComponent(jLabel14)
-                            .addComponent(tambahJumlah, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel12)
+                                .addGroup(jPanel2Layout.createSequentialGroup()
+                                    .addComponent(istambah1)
+                                    .addGap(52, 52, 52)
+                                    .addComponent(isTambah0))
+                                .addComponent(jLabel14)
+                                .addComponent(tambahJumlah, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 827, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -657,7 +617,6 @@ public class TrxPenggajian extends javax.swing.JPanel {
                         .addComponent(tambahJumlah, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(60, 60, 60)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnBatalDetail, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnDeleteDetail, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnSimpan2, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnSimpan1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -667,22 +626,17 @@ public class TrxPenggajian extends javax.swing.JPanel {
                         .addComponent(tambahKdDetail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel11)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(tambahKaryawanP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12)
+                        .addComponent(kdSlip, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel13)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(tambahJenis, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(7, 7, 7)
                         .addComponent(jLabel15)))
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addComponent(tambahDeskripsi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
-                        .addComponent(searchKodeSlip, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(18, 18, 18)
+                .addGap(10, 10, 10)
+                .addComponent(tambahDeskripsi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -718,7 +672,7 @@ public class TrxPenggajian extends javax.swing.JPanel {
                             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelAddMinLayout.createSequentialGroup()
                                 .addComponent(jLabel10)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 567, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 578, Short.MAX_VALUE)
                                 .addComponent(jLabel8)))
                         .addGap(20, 20, 20))))
         );
@@ -735,7 +689,7 @@ public class TrxPenggajian extends javax.swing.JPanel {
                     .addComponent(btnTambahReset1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addContainerGap(10, Short.MAX_VALUE))
         );
 
         panelMain.add(panelAddMin, "card9");
@@ -763,7 +717,7 @@ public class TrxPenggajian extends javax.swing.JPanel {
     }//GEN-LAST:event_btnSimpanActionPerformed
 
     private void btnTambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahActionPerformed
-    panelMain.removeAll();
+        panelMain.removeAll();
         panelMain.add(panelAdd);
         panelMain.repaint();
         panelMain.revalidate();
@@ -773,11 +727,17 @@ public class TrxPenggajian extends javax.swing.JPanel {
         if (btnTambah.getText().equals("Ubah")) {
             dataTable(); 
             btnSimpan.setText("Perbarui");
+            tambahKD.setEditable(false);
+            tambahGajiPokok.setEditable(false);
         } else {
             resetForm(); 
             btnSimpan.setText("Simpan");
+            
+            tambahKD.setText(generateKodeSlipGaji());
+            tambahKD.setEditable(false);
+            tambahGajiPokok.setEditable(false);
         }
-
+        
     }//GEN-LAST:event_btnTambahActionPerformed
 
     private void btnTambahBatalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahBatalActionPerformed
@@ -814,15 +774,6 @@ public class TrxPenggajian extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_tambahGajiPokokActionPerformed
 
-    private void btnTambahGajiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahGajiActionPerformed
-        panelMain.removeAll();
-        panelMain.add(panelAddMin);
-        panelMain.repaint();
-        panelMain.revalidate();
-        
-        loadComboSlip();
-    }//GEN-LAST:event_btnTambahGajiActionPerformed
-
     private void tambahKaryawanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tambahKaryawanActionPerformed
         Karyawan selected = (Karyawan)tambahKaryawan.getSelectedItem();
     
@@ -834,10 +785,7 @@ public class TrxPenggajian extends javax.swing.JPanel {
             return;
         }
 
-        System.out.printf("Selected - ID: %s, Nama: %s, JabatanID: %d%n",
-            selected.getKdKaryawan(), 
-            selected.getNama(), 
-            selected.getJabatanId());
+        
 
         // Check if kdKaryawan is not empty (instead of > 0)
         if (!selected.getKdKaryawan().isEmpty()) {
@@ -857,12 +805,13 @@ public class TrxPenggajian extends javax.swing.JPanel {
         btnBatal.setVisible(true);
         btnDelete.setVisible(true);
         btnSlip.setVisible(true);
+        btnTambahDetail.setVisible(true);
     }//GEN-LAST:event_tableSlipMouseClicked
 
     private void btnSimpan1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimpan1ActionPerformed
         
        insertDataDetail();
-       loadDetailGaji();
+       //loadDetailGaji();
     }//GEN-LAST:event_btnSimpan1ActionPerformed
 
     private void btnTambahBatal1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahBatal1ActionPerformed
@@ -874,24 +823,12 @@ public class TrxPenggajian extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnTambahBatal1ActionPerformed
 
-    private void tambahKaryawanPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tambahKaryawanPActionPerformed
-//        Object selected = tambahKaryawanP.getSelectedItem();
-//
-//            if (!(selected instanceof SlipGaji)) {
-//                clearDetailGajiTable();
-//                return;
-//            }
-//
-//            SlipGaji slip = (SlipGaji) selected;
-//            loadDetailGaji(slip.getKdSlip());
-    }//GEN-LAST:event_tambahKaryawanPActionPerformed
-
     private void tambahDeskripsiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tambahDeskripsiActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_tambahDeskripsiActionPerformed
 
     private void btnTambahReset1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahReset1ActionPerformed
-        // TODO add your handling code here:
+        resetDetailForm();
     }//GEN-LAST:event_btnTambahReset1ActionPerformed
 
     private void tambahJenisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tambahJenisActionPerformed
@@ -906,25 +843,18 @@ public class TrxPenggajian extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_istambah1ActionPerformed
 
-    private void searchKodeSlipKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchKodeSlipKeyTyped
-        searchDataDetail();
-    }//GEN-LAST:event_searchKodeSlipKeyTyped
-
-    private void btnBatalDetailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBatalDetailActionPerformed
-
-        loadDetailGaji();
-        resetDetailForm();
-    }//GEN-LAST:event_btnBatalDetailActionPerformed
-
     private void btnDeleteDetailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteDetailActionPerformed
         deleteDataDetail();
     }//GEN-LAST:event_btnDeleteDetailActionPerformed
 
     private void tableDetailGajiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableDetailGajiMouseClicked
         dataTableDetail();
+        tambahKdDetail.setEditable(false);
+        kdSlip.setEditable(false);
         btnBatal.setVisible(true);
         btnDelete.setVisible(true);
         btnSlip.setVisible(true);
+        btnTambahDetail.setVisible(true);
     }//GEN-LAST:event_tableDetailGajiMouseClicked
 
     private void tambahKdDetailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tambahKdDetailActionPerformed
@@ -933,50 +863,102 @@ public class TrxPenggajian extends javax.swing.JPanel {
 
     private void btnSimpan2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimpan2ActionPerformed
         updateDataDetail();
-        loadDetailGaji();
+        //loadDetailGaji();
     }//GEN-LAST:event_btnSimpan2ActionPerformed
 
     private void btnSlipActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSlipActionPerformed
+        Connection conn = null;
+    
         try {
-            // 1. Prepare parameters
-            Map<String, Object> parameter = new HashMap<String, Object>();
+            // 1. Validate row selection
+            if (tableSlip.getSelectedRow() == -1) {
+                JOptionPane.showMessageDialog(null, 
+                    "Please select a salary slip first!", 
+                    "Selection Required", 
+                    JOptionPane.WARNING_MESSAGE);
+                return;
+            }
 
-            // Get selected leave ID from table
-            String selectedKdSlip = tableSlip.getValueAt(tableSlip.getSelectedRow(), 0).toString().trim();
-            System.out.println("Debug - Selected kd_slip: " + selectedKdSlip);
-            parameter.put("kd_slip", selectedKdSlip);
+            // 2. Prepare report parameters
+            Map<String, Object> parameters = new HashMap<>();
+            String selectedKdSlip = tableSlip.getValueAt(tableSlip.getSelectedRow(), 1).toString().trim();
+            parameters.put("kd_slip", selectedKdSlip);
 
-            // 2. Database connection
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/talent_sphere2",
-                "root",
-                ""
-            );
+            // 3. Get connection from centralized configuration
+            conn = DatabaseConnection.getConnection();
 
-            String reportPath = "C:\\Users\\darwi\\Documents\\NetBeansProjects\\TalentSphere\\report\\SlipGaji.jrxml";
-            JasperReport jr = JasperCompileManager.compileReport(reportPath);
-            JasperPrint jp = JasperFillManager.fillReport(jr, parameter, conn);
+            // 4. Load and compile report from resources
+            InputStream reportStream = getClass().getClassLoader()
+                .getResourceAsStream("reports/SlipGaji.jrxml");
 
-            if (jp.getPages().isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Report generated but empty for leave ID: " + selectedKdSlip);
+            if (reportStream == null) {
+                throw new RuntimeException("Salary slip report template not found!");
+            }
+
+            JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
+
+            // 5. Fill and display report
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, conn);
+
+            if (jasperPrint.getPages().isEmpty()) {
+                JOptionPane.showMessageDialog(null,
+                    "No data found for salary slip ID: " + selectedKdSlip +
+                    "\nPlease verify:\n1. The slip exists in database\n2. Report parameters are correct",
+                    "Empty Report",
+                    JOptionPane.INFORMATION_MESSAGE);
             } else {
-                JasperViewer viewer = new JasperViewer(jp, false);
+                JasperViewer viewer = new JasperViewer(jasperPrint, false);
+                viewer.setTitle("Salary Slip - " + selectedKdSlip);
                 viewer.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 viewer.setVisible(true);
             }
-
-            conn.close();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null,
+                "Database error: " + e.getMessage(),
+                "Database Error",
+                JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null,
+                "Failed to generate salary slip: " + e.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        } finally {
+            // 6. Ensure connection is closed
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    System.err.println("Error closing connection: " + e.getMessage());
+                }
+            }
         }
     }//GEN-LAST:event_btnSlipActionPerformed
+
+    private void btnTambahDetailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahDetailActionPerformed
+        panelMain.removeAll();
+        panelMain.add(panelAddMin);
+        panelMain.repaint();
+        panelMain.revalidate();
+        
+        int row = tableSlip.getSelectedRow();
+            if (row < 0) {
+                JOptionPane.showMessageDialog(this, "Pilih Slip terlebih dahulu");
+                return;
+            }
+            String kodeSlip = tableSlip.getValueAt(row, 1).toString();
+
+          kdSlip.setText(kodeSlip);
+          loadDetailGaji(kodeSlip);
+          tambahKdDetail.setText(generateKodeDetailGaji());
+          tambahKdDetail.setEditable(false);
+          kdSlip.setEditable(false);
+    }//GEN-LAST:event_btnTambahDetailActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBatal;
-    private javax.swing.JButton btnBatalDetail;
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnDeleteDetail;
     private javax.swing.JButton btnSimpan;
@@ -986,7 +968,7 @@ public class TrxPenggajian extends javax.swing.JPanel {
     private javax.swing.JButton btnTambah;
     private javax.swing.JButton btnTambahBatal;
     private javax.swing.JButton btnTambahBatal1;
-    private javax.swing.JButton btnTambahGaji;
+    private javax.swing.JButton btnTambahDetail;
     private javax.swing.JButton btnTambahReset;
     private javax.swing.JButton btnTambahReset1;
     private javax.swing.JRadioButton isTambah0;
@@ -1004,7 +986,6 @@ public class TrxPenggajian extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
@@ -1013,11 +994,11 @@ public class TrxPenggajian extends javax.swing.JPanel {
     private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTextField kdSlip;
     private javax.swing.JPanel panelAdd;
     private javax.swing.JPanel panelAddMin;
     private javax.swing.JPanel panelMain;
     private javax.swing.JPanel panelView;
-    private javax.swing.JTextField searchKodeSlip;
     private javax.swing.JTable tableDetailGaji;
     private javax.swing.JTable tableSlip;
     private javax.swing.JTextField tambahDeskripsi;
@@ -1026,7 +1007,6 @@ public class TrxPenggajian extends javax.swing.JPanel {
     private javax.swing.JTextField tambahJumlah;
     private javax.swing.JTextField tambahKD;
     private javax.swing.JComboBox<Karyawan> tambahKaryawan;
-    private javax.swing.JComboBox<SlipGaji> tambahKaryawanP;
     private javax.swing.JTextField tambahKdDetail;
     private com.github.lgooddatepicker.components.DatePicker tambahPeriode;
     private javax.swing.JTextField txtSearch;
@@ -1040,16 +1020,18 @@ public class TrxPenggajian extends javax.swing.JPanel {
         btnBatal.setVisible(false);
         btnDelete.setVisible(false);
         btnSlip.setVisible(false);
+        btnTambahDetail.setVisible(false);
         
         panelMain.repaint();
         panelMain.revalidate();
     }
     
     private void loadGaji() {
-           
         btnBatal.setVisible(false);
         btnDelete.setVisible(false);
         btnSlip.setVisible(false);
+        btnTambahDetail.setVisible(false);
+
         SlipGajiController slipGajiController = new SlipGajiController();
         List<SlipGaji> slipgajis = slipGajiController.getAllSlipGaji();
 
@@ -1057,8 +1039,10 @@ public class TrxPenggajian extends javax.swing.JPanel {
         model.setRowCount(0);
 
         if (slipgajis != null) {
+            int rowNumber = 1;
             for (SlipGaji slipgaji : slipgajis) {
                 model.addRow(new Object[]{
+                    rowNumber++, // Row number
                     slipgaji.getKdSlip(),
                     slipgaji.getKaryawan(),
                     slipgaji.getPeriode(),
@@ -1069,14 +1053,17 @@ public class TrxPenggajian extends javax.swing.JPanel {
                 });
             }
         }
-        
-        
-
-        
     }
 
     private void setTableGaji() {
-        DefaultTableModel model = new DefaultTableModel();
+        DefaultTableModel model = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Make all cells non-editable
+            }
+        };
+
+        model.addColumn("No"); // Add row number column
         model.addColumn("Kode Slip");
         model.addColumn("Nama Karyawan");
         model.addColumn("Periode");
@@ -1087,14 +1074,15 @@ public class TrxPenggajian extends javax.swing.JPanel {
 
         tableSlip.setModel(model);
 
-        // Optional: Set preferred column widths if needed
-        tableSlip.getColumnModel().getColumn(0).setPreferredWidth(80); // Kode Slip
-        tableSlip.getColumnModel().getColumn(1).setPreferredWidth(150); // Nama Karyawan
-        tableSlip.getColumnModel().getColumn(2).setPreferredWidth(100);  // Periode
-        tableSlip.getColumnModel().getColumn(3).setPreferredWidth(100); // Gaji Pokok
-        tableSlip.getColumnModel().getColumn(4).setPreferredWidth(100); // Penambahan
-        tableSlip.getColumnModel().getColumn(5).setPreferredWidth(100); // Pengurangan
-        tableSlip.getColumnModel().getColumn(6).setPreferredWidth(120); // Total
+        // Set preferred column widths
+        tableSlip.getColumnModel().getColumn(0).setPreferredWidth(40);  // No
+        tableSlip.getColumnModel().getColumn(1).setPreferredWidth(80);  // Kode Slip
+        tableSlip.getColumnModel().getColumn(2).setPreferredWidth(150); // Nama Karyawan
+        tableSlip.getColumnModel().getColumn(3).setPreferredWidth(100); // Periode
+        tableSlip.getColumnModel().getColumn(4).setPreferredWidth(80); // Gaji Pokok
+        tableSlip.getColumnModel().getColumn(5).setPreferredWidth(80); // Penambahan
+        tableSlip.getColumnModel().getColumn(6).setPreferredWidth(80); // Pengurangan
+        tableSlip.getColumnModel().getColumn(7).setPreferredWidth(120); // Total
     }
 
     private void resetForm() {
@@ -1106,26 +1094,29 @@ public class TrxPenggajian extends javax.swing.JPanel {
     }
     
     private void searchData() {
-        String keyword = txtSearch.getText();
-        SlipGajiController slipGajiController = new SlipGajiController();
-        List<SlipGaji> slipgajis = slipGajiController.searchSlipGajis(keyword);
+     String keyword = txtSearch.getText();
+     SlipGajiController slipGajiController = new SlipGajiController();
+     List<SlipGaji> slipgajis = slipGajiController.searchSlipGajis(keyword);
 
-        DefaultTableModel model = (DefaultTableModel) tableSlip.getModel();
-        model.setRowCount(0);
+     DefaultTableModel model = (DefaultTableModel) tableSlip.getModel();
+     model.setRowCount(0);
 
-        for (SlipGaji slipgaji : slipgajis) {
-            model.addRow(new Object[]{
-                slipgaji.getKdSlip(),
-                
-                    slipgaji.getKaryawan(),
-                    slipgaji.getPeriode(),
-                    slipgaji.getGajiPokok(),
-                    slipgaji.getTotalTambahan(),
-                    slipgaji.getTotalPengurangan(),
-                    slipgaji.getGajiBersih()
-            });
-        }
-    }
+     if (slipgajis != null) {
+         int rowNumber = 1;
+         for (SlipGaji slipgaji : slipgajis) {
+             model.addRow(new Object[]{
+                 rowNumber++, // Row number
+                 slipgaji.getKdSlip(),
+                 slipgaji.getKaryawan(),
+                 slipgaji.getPeriode(),
+                 slipgaji.getGajiPokok(),
+                 slipgaji.getTotalTambahan(),
+                 slipgaji.getTotalPengurangan(),
+                 slipgaji.getGajiBersih()
+             });
+         }
+     }
+ }
 
     private void dataTable(){
         panelView.setVisible(false);
@@ -1134,17 +1125,17 @@ public class TrxPenggajian extends javax.swing.JPanel {
         int row = tableSlip.getSelectedRow();
         jLabel4.setText("Ubah Data Slip");
         
-        tambahKD.setText(tableSlip.getValueAt(row, 0).toString());
-        setComboFromTable(tambahKaryawan, tableSlip.getValueAt(row, 1).toString());
-        tambahGajiPokok.setText(tableSlip.getValueAt(row, 3).toString());
+        tambahKD.setText(tableSlip.getValueAt(row, 1).toString());
+        setComboFromTable(tambahKaryawan, tableSlip.getValueAt(row, 2).toString());
+        tambahGajiPokok.setText(tableSlip.getValueAt(row, 4).toString());
        // Set dates
        
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
             // Handle possible null dates
-            if (tableSlip.getValueAt(row, 2) != null) {
-                Date tgl = sdf.parse(tableSlip.getValueAt(row, 2).toString());
+            if (tableSlip.getValueAt(row, 3) != null) {
+                Date tgl = sdf.parse(tableSlip.getValueAt(row, 3).toString());
                 tambahPeriode.setDate(tgl.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
             }
 
@@ -1222,12 +1213,7 @@ public class TrxPenggajian extends javax.swing.JPanel {
     private void loadComboKaryawan() {
         KaryawanController controller = new KaryawanController();
         List<Karyawan> karyawanList = controller.getAllKaryawanForComboBox();
-         // Debug: Print loaded data
-        System.out.println("Loaded karyawan data:");
-        for (Karyawan k : karyawanList) {
-            System.out.printf("KD: %s, Nama: %s, JabatanID: %d%n", 
-                k.getKdKaryawan(), k.getNama(), k.getJabatanId());
-        }
+        
 
         tambahKaryawan.removeAllItems();
         tambahKaryawan.addItem(new Karyawan()); // Empty option
@@ -1340,35 +1326,59 @@ public class TrxPenggajian extends javax.swing.JPanel {
     }
 
     private void deleteData() {
-            int selectedRow = tableSlip.getSelectedRow();
-            int confirm = JOptionPane.showConfirmDialog(this, "Apakah anda ingin menghapus data ini ?",
-                    "Konfirmasi Hapus Data", JOptionPane.YES_NO_OPTION);
-            if (confirm == JOptionPane.YES_OPTION) {
-                try {
+    int selectedRow = tableSlip.getSelectedRow();
+    if (selectedRow < 0) {
+        JOptionPane.showMessageDialog(this, "Pilih data yang akan dihapus!");
+        return;
+    }
+    
+    int confirm = JOptionPane.showConfirmDialog(this, "Apakah anda ingin menghapus data ini ?",
+            "Konfirmasi Hapus Data", JOptionPane.YES_NO_OPTION);
+    if (confirm == JOptionPane.YES_OPTION) {
+        try {
+            // Get the kdSlip from column 1 (column 0 is the row number)
+            String idStr = tableSlip.getValueAt(selectedRow, 1).toString();
 
-                    String idStr = tableSlip.getValueAt(selectedRow, 0).toString();
+            SlipGajiController slipGajiController = new SlipGajiController();
+            boolean success = slipGajiController.deleteSlipGaji(idStr);
 
-
-                    SlipGajiController slipGajiController = new SlipGajiController();
-                    boolean success = slipGajiController.deleteSlipGaji(idStr);
-
-                    if (success) {
-                        JOptionPane.showMessageDialog(this, "Data berhasil dihapus!");
-                        loadGaji(); 
-                        resetForm(); 
-                        showPanelView();
-                        btnTambah.setText("Tambah");
-
-                    } else {
-                        JOptionPane.showMessageDialog(this, "Gagal menghapus data.", "Error", JOptionPane.ERROR_MESSAGE);
-                    }
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(this, "Terjadi kesalahan: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }
+            if (success) {
+                JOptionPane.showMessageDialog(this, "Data berhasil dihapus!");
+                loadGaji(); 
+                resetForm(); 
+                showPanelView();
+                btnTambah.setText("Tambah");
+            } else {
+                JOptionPane.showMessageDialog(this, "Gagal menghapus data.", "Error", JOptionPane.ERROR_MESSAGE);
             }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Terjadi kesalahan: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+}
+
+    private String generateKodeSlipGaji() { 
+        SlipGajiController controller = new SlipGajiController();
+        String lastKode = controller.getLastKodeSlipGaji();
+
+        if (lastKode == null || lastKode.isEmpty()) {
+            return "SLP-001"; // If no employees exist yet
         }
 
+        try {
+            // Extract the numeric part
+            String numericPart = lastKode.split("-")[1];
+            int number = Integer.parseInt(numericPart);
+
+            // Increment and format with leading zeros
+            return String.format("SLP-%03d", number + 1);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error generating employee code: " + e.getMessage());
+            return "SLP-001"; // Fallback
+        }
+    }
    
+    
 //   FOR DETAIL GAJI
 
     private void insertDataDetail() {
@@ -1376,7 +1386,8 @@ public class TrxPenggajian extends javax.swing.JPanel {
         String kd = tambahKdDetail.getText().trim();
         String jenis = tambahJenis.getText().trim();
         String deskripsi = tambahDeskripsi.getText().trim();
-        SlipGaji selectedSlipGaji = (SlipGaji) tambahKaryawanP.getSelectedItem();
+        
+        String kodeSlip = kdSlip.getText().trim();
         String jumlahText = tambahJumlah.getText().trim();
         
         // Get radio button selection
@@ -1394,21 +1405,7 @@ public class TrxPenggajian extends javax.swing.JPanel {
         }
 
         // Validate inputs
-        if (selectedSlipGaji == null) {
-            JOptionPane.showMessageDialog(this, 
-                "Pilih karyawan terlebih dahulu!", 
-                "Error", 
-                JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        if (selectedSlipGaji.getKdSlip() == null) {
-            JOptionPane.showMessageDialog(this, 
-                "Data slip gaji tidak valid!", 
-                "Error", 
-                JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
+      
         if (jenis.isEmpty()) {
             JOptionPane.showMessageDialog(this, 
                 "Jenis tidak boleh kosong!", 
@@ -1453,7 +1450,7 @@ public class TrxPenggajian extends javax.swing.JPanel {
         // Create new detail object
         DetailGaji detail = new DetailGaji();
         detail.setkdDetail(kd);
-        detail.setKdSlip(selectedSlipGaji.getKdSlip());
+        detail.setKdSlip(kodeSlip);
         detail.setJenis(jenis);
         detail.setDeskripsi(deskripsi);
         detail.setIsTambah(isTambah);
@@ -1463,7 +1460,7 @@ public class TrxPenggajian extends javax.swing.JPanel {
         DetailGajiController controller = new DetailGajiController();
         if (controller.insertDetailGaji(detail)) {
             JOptionPane.showMessageDialog(this, "Data detail berhasil disimpan!");
-            loadDetailGaji(); // Refresh the detail list
+            loadDetailGaji(kodeSlip); // Refresh the detail list
             resetDetailForm(); // Clear the form
         } else {
             JOptionPane.showMessageDialog(this, "Gagal menyimpan data detail.");
@@ -1478,177 +1475,98 @@ public class TrxPenggajian extends javax.swing.JPanel {
 }
 
     private void resetDetailForm() {
-    tambahKdDetail.setText("");
+    
     tambahJenis.setText("");
     tambahDeskripsi.setText("");
     tambahJumlah.setText("");
-    //buttonGroup1.clearSelection(); // Clear radio button selection
-    tambahKaryawanP.setSelectedIndex(0); // Reset combo box
+    tambahKdDetail.setText(generateKodeDetailGaji());
+    
 }
     
-    
-    private void loadComboSlip() {
-        SlipGajiController controller = new SlipGajiController();
-        List<SlipGaji> slipList = controller.getAllSlipGaji();
-
-        tambahKaryawanP.removeAllItems();
-        // Add empty option with a dummy SlipGaji object
-        tambahKaryawanP.addItem(new SlipGaji("", "", null, BigDecimal.ZERO));
-
-        for (SlipGaji s : slipList) {
-            tambahKaryawanP.addItem(s);
-        }
-
-        // Custom renderer for better display
-        tambahKaryawanP.setRenderer(new DefaultListCellRenderer() {
-            @Override
-            public Component getListCellRendererComponent(JList<?> list, Object value, int index, 
-                                                        boolean isSelected, boolean cellHasFocus) {
-                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                if (value instanceof SlipGaji) {
-                    SlipGaji s = (SlipGaji) value;
-                    if (s.getKdSlip().isEmpty()) { // Check for empty option
-                        setText("Pilih Slip Gaji");
-                    } else {
-                        setText(String.format("%s - %s - %s", 
-                            s.getKdSlip(),
-                            s.getKaryawan(),
-                            new SimpleDateFormat("MMM yyyy").format(s.getPeriode())));
-                    }
-                }
-                return this;
-            }
-        });
-    }
-
-    private void loadDetailGaji() {
-        try {
-            btnBatal.setVisible(false);
-            btnDelete.setVisible(false);
-
-            // Clear existing data
-            DefaultTableModel model = (DefaultTableModel) tableDetailGaji.getModel();
-            model.setRowCount(0);
-
-            // Load new data
-            DetailGajiController controller = new DetailGajiController();
-            List<DetailGaji> details = controller.getAllDetailGaji();
-
-            if (details != null && !details.isEmpty()) {
-                for (DetailGaji detail : details) {
-                    model.addRow(new Object[]{
-                        detail.getkdDetail(),
-                        detail.getKdSlip(),
-                        detail.getJenis(),
-                        detail.getDeskripsi(),
-                        detail.getIsTambahAsInt(),
-                        detail.getJumlah()
-                    });
-                }
-            }
-        } catch (Exception e) {
-            System.err.println("Error loading details: " + e.getMessage());
-            //clearDetailGajiTable();
-        }
-    }
-
-    private void setTableDetailGaji() {
-    DefaultTableModel model = new DefaultTableModel();
-    model.addColumn("Kode Detail");
-    model.addColumn("Kode Slip");
-    model.addColumn("Jenis");
-    model.addColumn("Deskripsi");
-    model.addColumn("Is Tambah");
-    model.addColumn("Jumlah");
-    tableDetailGaji.setModel(model);
-}
-
-    private void searchDataDetail() {
-    String keyword = searchKodeSlip.getText().trim();
+    private void loadDetailGaji(String kdSlip) {
     try {
-        DetailGajiController detailGajiController = new DetailGajiController();
-        List<DetailGaji> detailGajis = detailGajiController.searchDetailGajiBySlip(keyword);
-
+        // Clear existing data
         DefaultTableModel model = (DefaultTableModel) tableDetailGaji.getModel();
-        model.setRowCount(0); // Clear existing data
+        model.setRowCount(0);
 
-        if (detailGajis.isEmpty()) {
-            JOptionPane.showMessageDialog(this, 
-                "Tidak ditemukan data dengan kode slip: " + keyword, 
-                "Informasi", 
-                JOptionPane.INFORMATION_MESSAGE);
-            return;
-        }
+        // Load filtered data
+        DetailGajiController controller = new DetailGajiController();
+        List<DetailGaji> details = controller.getDetailGajiByKdSlip(kdSlip);
 
-        // Add each detail to the table
-        for (DetailGaji detail : detailGajis) {
-            model.addRow(new Object[]{
-                detail.getkdDetail(),
-                detail.getKdSlip(),
-                detail.getJenis(),
-                detail.getDeskripsi(),
-                detail.getIsTambahAsInt(),
-                detail.getJumlah()
-            });
+        if (details != null && !details.isEmpty()) {
+            int rowNumber = 1;
+            for (DetailGaji detail : details) {
+                model.addRow(new Object[]{
+                    rowNumber++, // Row number
+                    detail.getkdDetail(),
+                    detail.getKdSlip(),
+                    detail.getJenis(),
+                    detail.getDeskripsi(),
+                    detail.getIsTambahAsInt(),
+                    detail.getJumlah()
+                });
+            }
         }
     } catch (Exception e) {
-        JOptionPane.showMessageDialog(this, 
-            "Error saat mencari data: " + e.getMessage(), 
-            "Error", 
-            JOptionPane.ERROR_MESSAGE);
-        e.printStackTrace();
+        System.err.println("Error loading details: " + e.getMessage());
     }
 }
 
-    private void setComboFromTableDetail(JComboBox<SlipGaji> combo, String kdSlip) {
-    for (int i = 0; i < combo.getItemCount(); i++) {
-        SlipGaji item = combo.getItemAt(i);
-        if (item.getKdSlip().equals(kdSlip)) {
-            combo.setSelectedIndex(i);
-            return;
-        }
-    }
-    // If not found, select first item (empty option)
-    if (combo.getItemCount() > 0) {
-        combo.setSelectedIndex(0);
-    }
-}
-    
-    private void dataTableDetail(){
+    private void setTableDetailGaji() {
+        DefaultTableModel model = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Make all cells non-editable
+            }
+        };
 
-        int row = tableDetailGaji.getSelectedRow();
-        
-        
-        tambahKdDetail.setText(tableDetailGaji.getValueAt(row, 0).toString());
-        // Set combo box for slip gaji
-        String kdSlip = tableDetailGaji.getValueAt(row, 1).toString();
-        setComboFromTableDetail(tambahKaryawanP, kdSlip);
-        
-        
-        tambahJenis.setText(tableDetailGaji.getValueAt(row, 2).toString());
-        tambahDeskripsi.setText(tableDetailGaji.getValueAt(row, 3).toString());
-        
-        String isTambah =tableDetailGaji.getValueAt(row, 4).toString();
-        if(isTambah.equals("1")){
-            istambah1.setSelected(true);
-            isTambah0.setSelected(false);
-        }else{
-            istambah1.setSelected(false);
-            isTambah0.setSelected(true);
-        }
-        tambahJumlah.setText(tableDetailGaji.getValueAt(row, 5).toString());
-       
-  
-        
+        model.addColumn("No"); // Add row number column
+        model.addColumn("Kode Detail");
+        model.addColumn("Kode Slip");
+        model.addColumn("Jenis");
+        model.addColumn("Deskripsi");
+        model.addColumn("Is Tambah");
+        model.addColumn("Jumlah");
+
+        tableDetailGaji.setModel(model);
+
+        // Set preferred column widths
+        tableDetailGaji.getColumnModel().getColumn(0).setPreferredWidth(40);  // No
+        tableDetailGaji.getColumnModel().getColumn(1).setPreferredWidth(80);  // Kode Detail
+        tableDetailGaji.getColumnModel().getColumn(2).setPreferredWidth(80);  // Kode Slip
+        tableDetailGaji.getColumnModel().getColumn(3).setPreferredWidth(100); // Jenis
+        tableDetailGaji.getColumnModel().getColumn(4).setPreferredWidth(150); // Deskripsi
+        tableDetailGaji.getColumnModel().getColumn(5).setPreferredWidth(80);  // Is Tambah
+        tableDetailGaji.getColumnModel().getColumn(6).setPreferredWidth(100); // Jumlah
     }
+
+    private void dataTableDetail() {
+         int row = tableDetailGaji.getSelectedRow();
+
+         // Skip the first column (row number)
+         tambahKdDetail.setText(tableDetailGaji.getValueAt(row, 1).toString());
+         kdSlip.setText(tableDetailGaji.getValueAt(row, 2).toString());
+         tambahJenis.setText(tableDetailGaji.getValueAt(row, 3).toString());
+         tambahDeskripsi.setText(tableDetailGaji.getValueAt(row, 4).toString());
+
+         String isTambah = tableDetailGaji.getValueAt(row, 5).toString();
+         if(isTambah.equals("1")) {
+             istambah1.setSelected(true);
+             isTambah0.setSelected(false);
+         } else {
+             istambah1.setSelected(false);
+             isTambah0.setSelected(true);
+         }
+         tambahJumlah.setText(tableDetailGaji.getValueAt(row, 6).toString());
+     }
     
-private void updateDataDetail() {
+    private void updateDataDetail() {
     try {
         // Get form values
         String kdDetail = tambahKdDetail.getText().trim();
         String jenis = tambahJenis.getText().trim();
         String deskripsi = tambahDeskripsi.getText().trim();
-        SlipGaji selectedSlipGaji = (SlipGaji) tambahKaryawanP.getSelectedItem();
+        String kodeSlip = kdSlip.getText().trim();
         String jumlahText = tambahJumlah.getText().trim();
         
         // Validate kdDetail (primary key for update)
@@ -1674,14 +1592,7 @@ private void updateDataDetail() {
             return;
         }
 
-        // Validate inputs
-        if (selectedSlipGaji == null || selectedSlipGaji.getKdSlip() == null || selectedSlipGaji.getKdSlip().isEmpty()) {
-            JOptionPane.showMessageDialog(this, 
-                "Pilih slip gaji yang valid!", 
-                "Error", 
-                JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+       
 
         if (jenis.isEmpty()) {
             JOptionPane.showMessageDialog(this, 
@@ -1729,7 +1640,7 @@ private void updateDataDetail() {
         // Create detail object with updated values
         DetailGaji detail = new DetailGaji();
         detail.setkdDetail(kdDetail);
-        detail.setKdSlip(selectedSlipGaji.getKdSlip());
+        detail.setKdSlip(kodeSlip);
         detail.setJenis(jenis);
         detail.setDeskripsi(deskripsi);
         detail.setIsTambah(isTambah);
@@ -1742,7 +1653,7 @@ private void updateDataDetail() {
                 "Data detail berhasil diperbarui!", 
                 "Sukses", 
                 JOptionPane.INFORMATION_MESSAGE);
-            loadDetailGaji(); // Refresh table
+            loadDetailGaji(kodeSlip);// Refresh table
             resetDetailForm(); // Clear form
         } else {
             JOptionPane.showMessageDialog(this, 
@@ -1760,33 +1671,55 @@ private void updateDataDetail() {
 }
     
     private void deleteDataDetail() {
-            int selectedRow = tableDetailGaji.getSelectedRow();
-            int confirm = JOptionPane.showConfirmDialog(this, "Apakah anda ingin menghapus data ini ?",
-                    "Konfirmasi Hapus Data", JOptionPane.YES_NO_OPTION);
-            if (confirm == JOptionPane.YES_OPTION) {
-                try {
+        int selectedRow = tableDetailGaji.getSelectedRow();
+        if (selectedRow < 0) {
+            JOptionPane.showMessageDialog(this, "Pilih data yang akan dihapus!");
+            return;
+        }
 
-                    String kdStr = tableDetailGaji.getValueAt(selectedRow, 0).toString();
+        int confirm = JOptionPane.showConfirmDialog(this, "Apakah anda ingin menghapus data ini ?",
+                "Konfirmasi Hapus Data", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            try {
+                // Get the kdDetail from column 1 (column 0 is the row number)
+                String kdStr = tableDetailGaji.getValueAt(selectedRow, 1).toString();
 
+                DetailGajiController detailGajiController = new DetailGajiController();
+                boolean success = detailGajiController.deleteDetailGaji(kdStr);
 
-                    DetailGajiController detailGajiController = new DetailGajiController();
-                    boolean success = detailGajiController.deleteDetailGaji(kdStr);
-
-                    if (success) {
-                        JOptionPane.showMessageDialog(this, "Data berhasil dihapus!");
-                        loadDetailGaji(); 
-                        resetForm(); 
-                        
-
-                    } else {
-                        JOptionPane.showMessageDialog(this, "Gagal menghapus data.", "Error", JOptionPane.ERROR_MESSAGE);
-                    }
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(this, "Terjadi kesalahan: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                if (success) {
+                    JOptionPane.showMessageDialog(this, "Data berhasil dihapus!");
+                    loadDetailGaji(kdSlip.getText());
+                    resetDetailForm(); 
+                } else {
+                    JOptionPane.showMessageDialog(this, "Gagal menghapus data.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Terjadi kesalahan: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
+    }
     
+    private String generateKodeDetailGaji() { 
+        DetailGajiController controller = new DetailGajiController();
+        String lastKode = controller.getLastKodeDetailGaji();
+
+        if (lastKode == null || lastKode.isEmpty()) {
+            return "DTL-001"; // If no employees exist yet
+        }
+
+        try {
+            // Extract the numeric part
+            String numericPart = lastKode.split("-")[1];
+            int number = Integer.parseInt(numericPart);
+
+            // Increment and format with leading zeros
+            return String.format("DTL-%03d", number + 1);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error generating employee code: " + e.getMessage());
+            return "DTL-001"; // Fallback
+        }
+    }
     
     
 }

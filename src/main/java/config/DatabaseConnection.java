@@ -13,9 +13,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DatabaseConnection {
-    private static final String URL = "jdbc:mysql://localhost:3306/talent_sphere2"; // Ganti dengan nama database kamu
-    private static final String USER = "root";  // Sesuaikan dengan user MySQL
-    private static final String PASSWORD = "";  // Sesuaikan dengan password MySQL
+    private static final String URL = "jdbc:mysql://localhost:3306/talent_sphere2"; // name db
+    private static final String USER = "root";  //  user MySQL
+    private static final String PASSWORD = "";  //  password MySQL
 
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASSWORD);

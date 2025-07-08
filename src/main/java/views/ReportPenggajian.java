@@ -7,26 +7,11 @@ package views;
 
 
 
-import controllers.JabatanController;
-import controllers.KaryawanController;
+
 import controllers.SlipGajiController;
-import controllers.DetailGajiController;
-import java.awt.Component;
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JComboBox;
 import javax.swing.JDialog;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import models.DetailGaji;
-import models.Jabatan;
-import models.Karyawan;
 import models.SlipGaji;
 
 /**
@@ -76,8 +61,8 @@ public class ReportPenggajian extends javax.swing.JPanel {
         jLabel1.setText("Report > Penggajian");
         jLabel1.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
 
-        jLabel2.setText("Penggajian");
         jLabel2.setFont(new java.awt.Font("Poppins", 1, 18)); // NOI18N
+        jLabel2.setText("Laporan Penggajian");
 
         txtSearch.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
         txtSearch.setText("Search...");
@@ -194,16 +179,9 @@ public class ReportPenggajian extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     
-    private void showPanelView(){
-        panelMain.removeAll();
-        panelMain.add(panelView);
-
+ 
+     private void loadGaji() {
         
-        panelMain.repaint();
-        panelMain.revalidate();
-    }
-    
-    private void loadGaji() {
 
         SlipGajiController slipGajiController = new SlipGajiController();
         List<SlipGaji> slipgajis = slipGajiController.getAllSlipGaji();
@@ -212,8 +190,10 @@ public class ReportPenggajian extends javax.swing.JPanel {
         model.setRowCount(0);
 
         if (slipgajis != null) {
+            int rowNumber = 1;
             for (SlipGaji slipgaji : slipgajis) {
                 model.addRow(new Object[]{
+                    rowNumber++, // Row number
                     slipgaji.getKdSlip(),
                     slipgaji.getKaryawan(),
                     slipgaji.getPeriode(),
@@ -224,14 +204,18 @@ public class ReportPenggajian extends javax.swing.JPanel {
                 });
             }
         }
-        
-        
-
-        
     }
 
-    private void setTableGaji() {
-        DefaultTableModel model = new DefaultTableModel();
+
+   private void setTableGaji() {
+        DefaultTableModel model = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Make all cells non-editable
+            }
+        };
+
+        model.addColumn("No"); // Add row number column
         model.addColumn("Kode Slip");
         model.addColumn("Nama Karyawan");
         model.addColumn("Periode");
@@ -242,38 +226,42 @@ public class ReportPenggajian extends javax.swing.JPanel {
 
         tableSlip.setModel(model);
 
-        // Optional: Set preferred column widths if needed
-        tableSlip.getColumnModel().getColumn(0).setPreferredWidth(80); // Kode Slip
-        tableSlip.getColumnModel().getColumn(1).setPreferredWidth(150); // Nama Karyawan
-        tableSlip.getColumnModel().getColumn(2).setPreferredWidth(100);  // Periode
-        tableSlip.getColumnModel().getColumn(3).setPreferredWidth(100); // Gaji Pokok
-        tableSlip.getColumnModel().getColumn(4).setPreferredWidth(100); // Penambahan
-        tableSlip.getColumnModel().getColumn(5).setPreferredWidth(100); // Pengurangan
-        tableSlip.getColumnModel().getColumn(6).setPreferredWidth(120); // Total
+        // Set preferred column widths
+        tableSlip.getColumnModel().getColumn(0).setPreferredWidth(40);  // No
+        tableSlip.getColumnModel().getColumn(1).setPreferredWidth(80);  // Kode Slip
+        tableSlip.getColumnModel().getColumn(2).setPreferredWidth(150); // Nama Karyawan
+        tableSlip.getColumnModel().getColumn(3).setPreferredWidth(100); // Periode
+        tableSlip.getColumnModel().getColumn(4).setPreferredWidth(80); // Gaji Pokok
+        tableSlip.getColumnModel().getColumn(5).setPreferredWidth(80); // Penambahan
+        tableSlip.getColumnModel().getColumn(6).setPreferredWidth(80); // Pengurangan
+        tableSlip.getColumnModel().getColumn(7).setPreferredWidth(120); // Total
     }
 
    
-    private void searchData() {
-        String keyword = txtSearch.getText();
-        SlipGajiController slipGajiController = new SlipGajiController();
-        List<SlipGaji> slipgajis = slipGajiController.searchSlipGajis(keyword);
+private void searchData() {
+     String keyword = txtSearch.getText();
+     SlipGajiController slipGajiController = new SlipGajiController();
+     List<SlipGaji> slipgajis = slipGajiController.searchSlipGajis(keyword);
 
-        DefaultTableModel model = (DefaultTableModel) tableSlip.getModel();
-        model.setRowCount(0);
+     DefaultTableModel model = (DefaultTableModel) tableSlip.getModel();
+     model.setRowCount(0);
 
-        for (SlipGaji slipgaji : slipgajis) {
-            model.addRow(new Object[]{
-                slipgaji.getKdSlip(),
-                
-                    slipgaji.getKaryawan(),
-                    slipgaji.getPeriode(),
-                    slipgaji.getGajiPokok(),
-                    slipgaji.getTotalTambahan(),
-                    slipgaji.getTotalPengurangan(),
-                    slipgaji.getGajiBersih()
-            });
-        }
-    }
+     if (slipgajis != null) {
+         int rowNumber = 1;
+         for (SlipGaji slipgaji : slipgajis) {
+             model.addRow(new Object[]{
+                 rowNumber++, // Row number
+                 slipgaji.getKdSlip(),
+                 slipgaji.getKaryawan(),
+                 slipgaji.getPeriode(),
+                 slipgaji.getGajiPokok(),
+                 slipgaji.getTotalTambahan(),
+                 slipgaji.getTotalPengurangan(),
+                 slipgaji.getGajiBersih()
+             });
+         }
+     }
+ }
 
 }
 

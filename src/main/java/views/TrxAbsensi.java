@@ -35,7 +35,8 @@ public class TrxAbsensi extends javax.swing.JPanel {
         loadAbsensi();
         loadComboStatus();
         loadComboKaryawan();
-        
+        tambahTanggal.setDate(LocalDate.now());
+
     }
     
     /**
@@ -84,7 +85,7 @@ public class TrxAbsensi extends javax.swing.JPanel {
 
         panelView.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel1.setText("Transaksi> Absensi");
+        jLabel1.setText("Transaksi > Absensi");
         jLabel1.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
 
         jLabel2.setText("Data Absensi");
@@ -389,6 +390,8 @@ public class TrxAbsensi extends javax.swing.JPanel {
         panelMain.repaint();
         panelMain.revalidate();
         
+        tambahTanggal.setDate(LocalDate.now());
+
         
         if (btnTambah.getText().equals("Ubah")) {
             dataTable(); 
@@ -399,6 +402,8 @@ public class TrxAbsensi extends javax.swing.JPanel {
             btnSimpan.setText("Simpan");
             tambahKd.setText(generateKodeAbsensi());
             tambahKd.setEditable(false);
+            tambahTanggal.setDate(LocalDate.now());
+
         }
 
     }//GEN-LAST:event_btnTambahActionPerformed
@@ -485,33 +490,37 @@ public class TrxAbsensi extends javax.swing.JPanel {
     }
     
     private void loadAbsensi() {
-           
         btnBatal.setVisible(false);
         btnDelete.setVisible(false);
         AbsensiController absensiController = new AbsensiController();
         List<Absensi> absensis = absensiController.getAllAbsensi();
-        
+
         DefaultTableModel model = (DefaultTableModel)tabelAbsensi.getModel(); 
         model.setRowCount(0);
-        
+
         if (absensis != null) {
+            int number = 1;
             for (Absensi absensi : absensis) {
                 model.addRow(new Object[]{
+                    number++,
                     absensi.getKdAbsensi(),
                     absensi.getKaryawan(),
                     absensi.getTanggal(),
                     absensi.getStatus(),
                     absensi.getKeterangan(),
-                    
                 });
             }
         }
-
-        
     }
 
     private void setTableAbsensi() {
-        DefaultTableModel model = new DefaultTableModel();
+        DefaultTableModel model = new DefaultTableModel() {
+        @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Make all cells non-editable
+            }
+        };
+        model.addColumn("No");
         model.addColumn("Kode Absensi");
         model.addColumn("Nama Karyawan");
         model.addColumn("Tanggal");
@@ -519,9 +528,13 @@ public class TrxAbsensi extends javax.swing.JPanel {
         model.addColumn("Keterangan");
         
         tabelAbsensi.setModel(model);
-//        tabelAbsensi.getColumnModel().getColumn(0).setMinWidth(0);
-//        tabelAbsensi.getColumnModel().getColumn(0).setMaxWidth(0);
-//        tabelAbsensi.getColumnModel().getColumn(0).setWidth(0);
+        tabelAbsensi.getColumnModel().getColumn(0).setPreferredWidth(10);   
+        tabelAbsensi.getColumnModel().getColumn(1).setPreferredWidth(80);   
+        tabelAbsensi.getColumnModel().getColumn(2).setPreferredWidth(150);  
+        tabelAbsensi.getColumnModel().getColumn(3).setPreferredWidth(120);  
+        tabelAbsensi.getColumnModel().getColumn(4).setPreferredWidth(150);  
+        tabelAbsensi.getColumnModel().getColumn(5).setPreferredWidth(100);  
+
     }
 
     private void resetForm() {
@@ -533,7 +546,8 @@ public class TrxAbsensi extends javax.swing.JPanel {
         tambahStatus.setSelectedIndex(0);
         
         // Reset date pickers
-        tambahTanggal.setDate(null);
+        tambahTanggal.setDate(LocalDate.now());
+
        
         // Reset focus
         tambahKaryawan.requestFocusInWindow();
@@ -547,14 +561,15 @@ public class TrxAbsensi extends javax.swing.JPanel {
         DefaultTableModel model = (DefaultTableModel) tabelAbsensi.getModel();
         model.setRowCount(0);
 
+        int number = 1;
         for (Absensi absensi : absensis) {
             model.addRow(new Object[]{
+                number++,
                 absensi.getKdAbsensi(), 
                 absensi.getKaryawan(),
                 absensi.getTanggal(),
                 absensi.getStatus(),
                 absensi.getKeterangan(),
-
             });
         }
     }
@@ -571,28 +586,25 @@ public class TrxAbsensi extends javax.swing.JPanel {
 
         jLabel4.setText("Ubah Data Absensi");
 
-        // Get ID from hidden column
-        tambahKd.setText(tabelAbsensi.getValueAt(row, 0).toString());
-        
+        // Get ID from column 1 (since column 0 is now the numbering)
+        tambahKd.setText(tabelAbsensi.getValueAt(row, 1).toString());
 
         // Set basic fields
-        tambahKeterangan.setText(tabelAbsensi.getValueAt(row, 4).toString());
+        tambahKeterangan.setText(tabelAbsensi.getValueAt(row, 5).toString());
 
         // Set combo boxes
-        setComboFromTable(tambahKaryawan, tabelAbsensi.getValueAt(row, 1).toString());
-        setComboFromTable(tambahStatus, tabelAbsensi.getValueAt(row, 3).toString());
-
+        setComboFromTable(tambahKaryawan, tabelAbsensi.getValueAt(row, 2).toString());
+        setComboFromTable(tambahStatus, tabelAbsensi.getValueAt(row, 4).toString());
 
         // Set dates
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
             // Handle possible null dates
-            if (tabelAbsensi.getValueAt(row, 2) != null) {
-                Date tgl = sdf.parse(tabelAbsensi.getValueAt(row, 2).toString());
+            if (tabelAbsensi.getValueAt(row, 3) != null) {
+                Date tgl = sdf.parse(tabelAbsensi.getValueAt(row, 3).toString());
                 tambahTanggal.setDate(tgl.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
             }
-
 
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Error parsing dates: " + ex.getMessage());
@@ -702,33 +714,31 @@ public class TrxAbsensi extends javax.swing.JPanel {
     } 
 
     private void deleteData() {
-            int selectedRow = tabelAbsensi.getSelectedRow();
-            int confirm = JOptionPane.showConfirmDialog(this, "Apakah anda ingin menghapus data ini ?",
-                    "Konfirmasi Hapus Data", JOptionPane.YES_NO_OPTION);
-            if (confirm == JOptionPane.YES_OPTION) {
-                try {
+        int selectedRow = tabelAbsensi.getSelectedRow();
+        int confirm = JOptionPane.showConfirmDialog(this, "Apakah anda ingin menghapus data ini ?",
+                "Konfirmasi Hapus Data", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            try {
+                // Now kdAbsensi is in column 1 (column 0 is the numbering)
+                String kdAbsensi = tabelAbsensi.getValueAt(selectedRow, 1).toString();
 
-                    String kdKaryawan = tabelAbsensi.getValueAt(selectedRow, 0).toString();
-                    
+                AbsensiController absensiController = new AbsensiController();
+                boolean success = absensiController.deleteAbsensi(kdAbsensi);
 
-                    AbsensiController absensiController = new AbsensiController();
-                    boolean success = absensiController.deleteAbsensi(kdKaryawan);
-
-                    if (success) {
-                        JOptionPane.showMessageDialog(this, "Data berhasil dihapus!");
-                        loadAbsensi(); 
-                        resetForm(); 
-                        showPanelView();
-                        btnTambah.setText("Tambah");
-
-                    } else {
-                        JOptionPane.showMessageDialog(this, "Gagal menghapus data.", "Error", JOptionPane.ERROR_MESSAGE);
-                    }
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(this, "Terjadi kesalahan: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                if (success) {
+                    JOptionPane.showMessageDialog(this, "Data berhasil dihapus!");
+                    loadAbsensi(); 
+                    resetForm(); 
+                    showPanelView();
+                    btnTambah.setText("Tambah");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Gagal menghapus data.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Terjadi kesalahan: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
+    }
 
     private void loadComboKaryawan() {
         KaryawanController controller = new KaryawanController();
@@ -765,7 +775,7 @@ public class TrxAbsensi extends javax.swing.JPanel {
         }
     }
 
-    private String generateKodeAbsensi() {
+    private String generateKodeAbsensi() { 
         AbsensiController controller = new AbsensiController();
         String lastKode = controller.getLastKodeAbsensi();
 

@@ -41,20 +41,8 @@ public class Dashboard extends javax.swing.JFrame {
         }
 
         // Set judul window dengan nama user
-        this.setTitle("Dashboard - " + Session.getCurrentUser().getUsername());
+        this.setTitle("TalentSphere - " + Session.getCurrentUser().getUsername());
         pBodyContent.add(new PanelDashboard());
-//         switch (role) {
-//        case "Admin":
-//            System.out.println("Admin Dashboard Loaded");
-//            pBodyContent.add(new PanelDashboard());
-//            break;
-//        case "HRD":
-//            System.out.println("HRD Dashboard Loaded");
-//            pBodyContent.add(new PanelDashboard());
-//            break;
-//        default:
-//            System.out.println("Unknown Role, Redirecting...");
-//        }
          setVisible(true);
          tampilkanNamaUser();
          
@@ -1047,7 +1035,7 @@ public class Dashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_menuLaporanCutiMouseExited
 
     private void menuLogoutMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuLogoutMouseClicked
-        // Konfirmasi logout
+        
     int confirm = JOptionPane.showConfirmDialog(
         this, 
         "Apakah Anda yakin ingin keluar dari sistem?", 
@@ -1056,17 +1044,17 @@ public class Dashboard extends javax.swing.JFrame {
         JOptionPane.QUESTION_MESSAGE);
     
     if (confirm == JOptionPane.YES_OPTION) {
-        // Catat aktivitas logout (opsional)
+        
         System.out.println("User " + Session.getCurrentUser().getUsername() + " melakukan logout");
         
-        // Bersihkan session
+        
         Session.clear();
         
-        // Tampilkan form login
+        
         FormLogin loginForm = new FormLogin();
         loginForm.setVisible(true);
         
-        // Tutup form saat ini
+        
         this.dispose();
     }
     }//GEN-LAST:event_menuLogoutMouseClicked
@@ -1140,7 +1128,7 @@ public class Dashboard extends javax.swing.JFrame {
 
     private void tampilkanNamaUser() {
         User user = Session.getCurrentUser();
-        //labelNama.setText(user.getNama());
+        
         labelRole.setText(user.getRole());
 
     }

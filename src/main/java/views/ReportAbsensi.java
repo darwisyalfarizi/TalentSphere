@@ -6,30 +6,18 @@ package views;
 
 
 import controllers.AbsensiController;
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.FlowLayout;
 
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 
 import java.util.List;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
 
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
+import javax.swing.JDialog;
+
+
 import javax.swing.table.DefaultTableModel;
 import models.Absensi;
 
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.view.JasperViewer;
+
 
 
 /**
@@ -152,8 +140,8 @@ public class ReportAbsensi extends javax.swing.JPanel {
                 .addComponent(printReport, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
                 .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(87, 87, 87)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 414, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 483, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20))
         );
 
@@ -167,11 +155,7 @@ public class ReportAbsensi extends javax.swing.JPanel {
     }//GEN-LAST:event_txtSearchKeyTyped
 
     private void tabelAbsensiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelAbsensiMouseClicked
-//        if(btnTambah.getText().equals("Tambah")){
-//            btnTambah.setText("Ubah");
-//        }
-//        btnBatal.setVisible(true);
-//        btnDelete.setVisible(true);
+
     }//GEN-LAST:event_tabelAbsensiMouseClicked
 
     private void printReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printReportActionPerformed
@@ -204,55 +188,58 @@ public class ReportAbsensi extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     
-    private void showPanelView(){
-        panelMain.removeAll();
-        panelMain.add(panelView);
-
-        panelMain.repaint();
-        panelMain.revalidate();
-    }
+    
     
     private void loadAbsensi() {
-
+        
         AbsensiController absensiController = new AbsensiController();
         List<Absensi> absensis = absensiController.getAllAbsensi();
-        
+
         DefaultTableModel model = (DefaultTableModel)tabelAbsensi.getModel(); 
         model.setRowCount(0);
-        
+
         if (absensis != null) {
+            int number = 1;
             for (Absensi absensi : absensis) {
                 model.addRow(new Object[]{
+                    number++,
                     absensi.getKdAbsensi(),
                     absensi.getKaryawan(),
                     absensi.getTanggal(),
                     absensi.getStatus(),
                     absensi.getKeterangan(),
-                    
                 });
             }
         }
-
-        
     }
 
     private void setTableAbsensi() {
-        DefaultTableModel model = new DefaultTableModel();
-        model.addColumn("ID");
+        DefaultTableModel model = new DefaultTableModel() {
+        @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Make all cells non-editable
+            }
+        };
+        model.addColumn("No");
+        model.addColumn("Kode Absensi");
         model.addColumn("Nama Karyawan");
         model.addColumn("Tanggal");
         model.addColumn("Status");
         model.addColumn("Keterangan");
         
         tabelAbsensi.setModel(model);
-        tabelAbsensi.getColumnModel().getColumn(0).setMinWidth(0);
-        tabelAbsensi.getColumnModel().getColumn(0).setMaxWidth(0);
-        tabelAbsensi.getColumnModel().getColumn(0).setWidth(0);
+        tabelAbsensi.getColumnModel().getColumn(0).setPreferredWidth(10);   
+        tabelAbsensi.getColumnModel().getColumn(1).setPreferredWidth(80);   
+        tabelAbsensi.getColumnModel().getColumn(2).setPreferredWidth(150);  
+        tabelAbsensi.getColumnModel().getColumn(3).setPreferredWidth(120);  
+        tabelAbsensi.getColumnModel().getColumn(4).setPreferredWidth(150);  
+        tabelAbsensi.getColumnModel().getColumn(5).setPreferredWidth(100);  
+
     }
 
     
     
-    private void searchData() {
+   private void searchData() {
         String keyword = txtSearch.getText();
         AbsensiController absensiController = new AbsensiController();
         List<Absensi> absensis = absensiController.searchAbsensis(keyword);
@@ -260,17 +247,19 @@ public class ReportAbsensi extends javax.swing.JPanel {
         DefaultTableModel model = (DefaultTableModel) tabelAbsensi.getModel();
         model.setRowCount(0);
 
+        int number = 1;
         for (Absensi absensi : absensis) {
             model.addRow(new Object[]{
+                number++,
                 absensi.getKdAbsensi(), 
                 absensi.getKaryawan(),
                 absensi.getTanggal(),
                 absensi.getStatus(),
                 absensi.getKeterangan(),
-
             });
         }
     }
+
 
 
     

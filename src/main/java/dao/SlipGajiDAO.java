@@ -144,24 +144,19 @@ public class SlipGajiDAO {
         }
     }
 
-//    public String generateKdSlip() {
-//        String sql = "SELECT MAX(kd_slip) AS last_code FROM slip_gaji WHERE kd_slip LIKE 'SLP-%'";
-//        String newKdSlip = "SLP-00001"; // default value
-//        
-//        try (Connection conn = DatabaseConnection.getConnection();
-//             PreparedStatement stmt = conn.prepareStatement(sql);
-//             ResultSet rs = stmt.executeQuery()) {
-//            
-//            if (rs.next()) {
-//                String lastCode = rs.getString("last_code");
-//                if (lastCode != null) {
-//                    int lastNum = Integer.parseInt(lastCode.substring(4));
-//                    newKdSlip = String.format("SLP-%05d", lastNum + 1);
-//                }
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        return newKdSlip;
-//    }
+    public static String getLastKodeSlipGaji() {
+        String sql = "SELECT kd_slip FROM slip_gaji ORDER BY kd_slip DESC LIMIT 1";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            if (rs.next()) {
+                return rs.getString("kd_slip");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

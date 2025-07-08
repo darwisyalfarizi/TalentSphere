@@ -1,40 +1,37 @@
 <!-- Created with Jaspersoft Studio version 7.0.1.final using JasperReports Library version 7.0.1-573496633c2b4074e32f433154b543003f7d2498  -->
 <jasperReport name="tes" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="fe67707c-7516-48bf-ad96-6a19f8bb7c7c">
-	<property name="com.jaspersoft.studio.data.sql.tables" value="dGFsZW50X3NwaGVyZTIuamFiYXRhbiAsNDE2LDE3MyxkY2I4ZTYyNy1hODAwLTRiYzAtYmZjOS00&#xa;YWNjZWUxNTZlYzM7dGFsZW50X3NwaGVyZTIuY3V0aSAsMTUsMTUsNTdmOTQwZDUtMWUxZi00Y2I0&#xa;LWI3MGEtNjFmMmZiOTA1MmEzO3RhbGVudF9zcGhlcmUyLnNsaXBfZ2FqaSAsMTUsMjY5LDNiOGQ3&#xa;ZmNmLTE2ZDgtNGQwNC04MGI3LTQ2OWZmZWY1OWI4Yzt0YWxlbnRfc3BoZXJlMi5rYXJ5YXdhbiAs&#xa;MTg0LDMzLDdhNjU4NmVmLTliOWQtNDllMS1hN2ZjLWYxMWE1ZWQ2NzQ1Zjs="/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="MYSQL"/>
 	<parameter name="kd_cuti" class="java.lang.String"/>
-	<query language="SQL"><![CDATA[SELECT k.kd_karyawan,
-	k.nama,
-	k.no_ktp,
-	k.no_hp,
-	k.alamat,
-	k.jabatan_id,
-	k.departemen_id,
-	k.status,
-	k.tanggal_masuk,
-	k.tanggal_mulai_kontrak,
-	k.tanggal_berakhir_kontrak,
-	k.status_kontrak,
-	j.id_jabatan,
-	j.nama_jabatan,
-	j.gaji_pokok AS gaji_pokok_jabatan,
-	s.gaji_pokok AS gaji_pokok_slip,
-	c.kd_cuti,
-	c.tanggal_mulai,
-	c.tanggal_selesai,
-	c.keterangan,
-	c.status AS status_cuti,
-	DATEDIFF( c.tanggal_selesai,c.tanggal_mulai) + 1 AS jumlah_hari_cuti
-FROM talent_sphere2.karyawan k
-	INNER JOIN talent_sphere2.cuti c ON 
-	 c.kd_karyawan = k.kd_karyawan 
-	INNER JOIN talent_sphere2.jabatan j ON 
-	 k.jabatan_id = j.id_jabatan 
-	INNER JOIN talent_sphere2.slip_gaji s ON 
-	 s.kd_karyawan = k.kd_karyawan 
+	<query language="SQL"><![CDATA[SELECT 
+    k.kd_karyawan,
+    k.nama,
+    k.no_ktp,
+    k.no_hp,
+    k.alamat,
+    k.jabatan_id,
+    k.departemen_id,
+    k.status,
+    k.tanggal_masuk,
+    k.tanggal_mulai_kontrak,
+    k.tanggal_berakhir_kontrak,
+    k.status_kontrak,
+    j.id_jabatan,
+    j.nama_jabatan,
+    c.kd_cuti,
+    c.tanggal_mulai,
+    c.tanggal_selesai,
+    c.keterangan,
+    c.status AS status_cuti,
+    DATEDIFF(c.tanggal_selesai, c.tanggal_mulai) + 1 AS jumlah_hari_cuti
+FROM 
+    talent_sphere2.karyawan k
+    INNER JOIN talent_sphere2.cuti c ON c.kd_karyawan = k.kd_karyawan 
+    INNER JOIN talent_sphere2.jabatan j ON k.jabatan_id = j.id_jabatan 
 WHERE 
-	 c.kd_cuti = $P{kd_cuti} 
-ORDER BY k.nama DESC]]></query>
+    c.kd_cuti = $P{kd_cuti}
+ORDER BY 
+    k.nama DESC]]></query>
 	<field name="kd_karyawan" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.name" value="kd_karyawan"/>
 		<property name="com.jaspersoft.studio.field.label" value="kd_karyawan"/>
@@ -105,16 +102,6 @@ ORDER BY k.nama DESC]]></query>
 		<property name="com.jaspersoft.studio.field.label" value="nama_jabatan"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="jabatan"/>
 	</field>
-	<field name="gaji_pokok_jabatan" class="java.math.BigDecimal">
-		<property name="com.jaspersoft.studio.field.name" value="gaji_pokok"/>
-		<property name="com.jaspersoft.studio.field.label" value="gaji_pokok_jabatan"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="jabatan"/>
-	</field>
-	<field name="gaji_pokok_slip" class="java.math.BigDecimal">
-		<property name="com.jaspersoft.studio.field.name" value="gaji_pokok"/>
-		<property name="com.jaspersoft.studio.field.label" value="gaji_pokok_slip"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="slip_gaji"/>
-	</field>
 	<field name="kd_cuti" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.name" value="kd_cuti"/>
 		<property name="com.jaspersoft.studio.field.label" value="kd_cuti"/>
@@ -140,7 +127,7 @@ ORDER BY k.nama DESC]]></query>
 		<property name="com.jaspersoft.studio.field.label" value="status_cuti"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="cuti"/>
 	</field>
-	<field name="jumlah_hari_cuti" class="java.lang.Integer">
+	<field name="jumlah_hari_cuti" class="java.lang.Long">
 		<property name="com.jaspersoft.studio.field.name" value="jumlah_hari_cuti"/>
 		<property name="com.jaspersoft.studio.field.label" value="jumlah_hari_cuti"/>
 	</field>

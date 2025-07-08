@@ -37,14 +37,14 @@ public class UserDao {
             String role = rs.getString("role");
             
             if (PasswordUtil.checkPassword(password, hashedPassword)) {
-                return role; // Login berhasil, return role
+                return role; 
             }
         }
     } catch (SQLException e) {
         e.printStackTrace();
     }
 
-    return null; // Gagal login
+    return null; 
 }
 
     

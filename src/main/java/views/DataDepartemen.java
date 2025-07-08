@@ -425,8 +425,8 @@ public class DataDepartemen extends javax.swing.JPanel {
         if (departemens != null) {
             for (Departemen departemen : departemens) {
                 model.addRow(new Object[]{
-                    no++,                   // Sequence number
-                    departemen.getId(),     // Hidden ID
+                    no++,                   
+                    departemen.getId(),     
                     departemen.getNamaDepartemen()
                 });
             }
@@ -437,7 +437,7 @@ public class DataDepartemen extends javax.swing.JPanel {
         DefaultTableModel model = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // Make all cells non-editable
+                return false; 
             }
         };
 
@@ -449,11 +449,11 @@ public class DataDepartemen extends javax.swing.JPanel {
         tabelDepartemen.setModel(model);
 
         // Set column widths
-        tabelDepartemen.getColumnModel().getColumn(0).setPreferredWidth(5);  // No (sequence number)
-        tabelDepartemen.getColumnModel().getColumn(1).setMinWidth(0);         // Hide ID column
+        tabelDepartemen.getColumnModel().getColumn(0).setPreferredWidth(5);  
+        tabelDepartemen.getColumnModel().getColumn(1).setMinWidth(0);         
         tabelDepartemen.getColumnModel().getColumn(1).setMaxWidth(0);
         tabelDepartemen.getColumnModel().getColumn(1).setWidth(0);
-        tabelDepartemen.getColumnModel().getColumn(2).setPreferredWidth(300); // Nama Departemen
+        tabelDepartemen.getColumnModel().getColumn(2).setPreferredWidth(300); 
 
         // Optional: Set row height
         tabelDepartemen.setRowHeight(25);
@@ -474,8 +474,8 @@ public class DataDepartemen extends javax.swing.JPanel {
         int no = 1;
         for (Departemen departemen : departemens) {
             model.addRow(new Object[]{
-                no++,                   // Sequence number
-                departemen.getId(),     // Hidden ID
+                no++,                   
+                departemen.getId(),     
                 departemen.getNamaDepartemen()
             });
         }
@@ -488,10 +488,10 @@ public class DataDepartemen extends javax.swing.JPanel {
         int row = tabelDepartemen.getSelectedRow();
         jLabel4.setText("Ubah Data Departemen");
 
-        // Now column 2 is Nama Departemen (column 0 is sequence number, 1 is hidden ID)
+
         tambahNama.setText(tabelDepartemen.getValueAt(row, 2).toString());
 
-        // Now ID is in column 1
+
         String id = tabelDepartemen.getValueAt(row, 1).toString(); 
         tambahID.setText(id);
         tambahID.setVisible(false);
@@ -504,7 +504,7 @@ public class DataDepartemen extends javax.swing.JPanel {
         Departemen departemen = new Departemen();
         departemen.setNamaDepartemen(nama);
         
-        // Simpan lewat controller
+        
         DepartemenController departemenController = new DepartemenController();
         boolean success = departemenController.insertDepartemen(departemen);
 

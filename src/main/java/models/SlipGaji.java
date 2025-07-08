@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 public class SlipGaji {
-    private String kdSlip;  // Changed from int idSlip to String kdSlip
+    private String kdSlip;  
     private String kdKaryawan;
     private Date periode;
     private BigDecimal gajiPokok;
@@ -99,7 +99,7 @@ public class SlipGaji {
         this.details = details;
     }
     
-    // Method untuk menghitung ulang gaji bersih
+    
     public void hitungGajiBersih() {
         this.gajiBersih = this.gajiPokok
                 .add(this.totalTambahan)

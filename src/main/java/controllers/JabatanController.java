@@ -34,7 +34,7 @@ public class JabatanController {
         return JabatanDao.getNameJabatan();
     }
     public Jabatan getJabatanById(int id) {
-    // Implement this method to get Jabatan from database
+    
     JabatanDao jabatanDao = new JabatanDao();
     return jabatanDao.getById(id);
     }

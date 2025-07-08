@@ -7,18 +7,16 @@ package views;
 
 import controllers.CutiController;
 
-import controllers.KaryawanController;
+
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Date;
+
 import java.util.List;
-import javax.swing.JComboBox;
+
 import javax.swing.JDialog;
-import javax.swing.JOptionPane;
+
 import javax.swing.table.DefaultTableModel;
 import models.Cuti;
-import models.Karyawan;
+
 
 
 /**
@@ -189,57 +187,58 @@ public class ReportCuti extends javax.swing.JPanel {
     private javax.swing.JTextField txtSearch;
     // End of variables declaration//GEN-END:variables
 
-    
-    private void showPanelView(){
-        panelMain.removeAll();
-        panelMain.add(panelView);
-        
-        panelMain.repaint();
-        panelMain.revalidate();
-    }
+   
     
     private void loadCuti() {
-           
         
         CutiController cutiController = new CutiController();
         List<Cuti> cutis = cutiController.getAllCuti();
-        
+
         DefaultTableModel model = (DefaultTableModel)tabelCuti.getModel(); 
         model.setRowCount(0);
-        
+
         if (cutis != null) {
+            int number = 1;
             for (Cuti cuti : cutis) {
                 model.addRow(new Object[]{
+                    number++,
                     cuti.getKdCuti(),
                     cuti.getKaryawan(),
                     cuti.getTanggalMulai(),
                     cuti.getTanggalSelesai(),
                     cuti.getKeterangan(),
                     cuti.getStatus(),
-                    
                 });
             }
         }
-
-        
     }
 
-    private void setTableCuti() {
-        DefaultTableModel model = new DefaultTableModel();
-        model.addColumn("Kode Cuti");
-        model.addColumn("Nama Karyawan");
-        model.addColumn("Tanggal Mulai");
-        model.addColumn("Tanggal Selesai");
-        model.addColumn("Keterangan");
-        model.addColumn("Status");
-        
+   private void setTableCuti() {
+         DefaultTableModel model = new DefaultTableModel() {
+             @Override
+             public boolean isCellEditable(int row, int column) {
+                 return false; // Make all cells non-editable
+             }
+         };
+         model.addColumn("No");
+         model.addColumn("Kode Cuti");
+         model.addColumn("Nama Karyawan");
+         model.addColumn("Tanggal Mulai");
+         model.addColumn("Tanggal Selesai");
+         model.addColumn("Keterangan");
+         model.addColumn("Status");
+
         tabelCuti.setModel(model);
-        
-    }
-
-  
+        tabelCuti.getColumnModel().getColumn(0).setPreferredWidth(10);   
+        tabelCuti.getColumnModel().getColumn(1).setPreferredWidth(80);   
+        tabelCuti.getColumnModel().getColumn(2).setPreferredWidth(150);  
+        tabelCuti.getColumnModel().getColumn(3).setPreferredWidth(100);  
+        tabelCuti.getColumnModel().getColumn(4).setPreferredWidth(100);  
+        tabelCuti.getColumnModel().getColumn(5).setPreferredWidth(150);  
+        tabelCuti.getColumnModel().getColumn(5).setPreferredWidth(100);  
+     }
     
-    private void searchData() {
+   private void searchData() {
         String keyword = txtSearch.getText();
         CutiController cutiController = new CutiController();
         List<Cuti> cutis = cutiController.searchCutis(keyword); 
@@ -249,8 +248,10 @@ public class ReportCuti extends javax.swing.JPanel {
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
+        int number = 1;
         for (Cuti cuti : cutis) {
             model.addRow(new Object[]{
+                number++,
                 cuti.getKdCuti(), 
                 cuti.getKaryawan(),
                 cuti.getTanggalMulai() != null ? dateFormat.format(cuti.getTanggalMulai()) : "",
